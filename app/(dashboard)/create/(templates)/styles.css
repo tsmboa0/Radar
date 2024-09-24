@@ -1,0 +1,112 @@
+
+
+
+
+
+.create__main{
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+.create__section{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 992px) {
+    .create__section{
+        display: block;
+    }
+    .create__preview{
+        width: 90%;
+        height: auto;
+    }
+    
+}
+
+@media screen  and (max-width: 467px) {
+    .create__date{
+        display: block;
+    }
+}
+
+.submit__button{
+    width: 100%;
+    display: block;
+    margin-top: 0.9rem;
+}
+
+.options__prev{
+    display: block;
+    width: 100%;
+    height: 38px;
+}
+
+.betAmount{
+    width: 100%;
+    height: 38px;
+    border: 1px solid #642BFF;
+    margin-bottom: 0.8rem;
+    border-radius: 0.5rem;
+    padding: 0.4rem;
+}
+
+.preview__options{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.create__form{
+    width: 90%;
+    display: block;
+}
+
+.create__form input, textarea{
+    width: 100%;
+    height: 38px;
+    padding: 0.5rem;
+    border: 1.2px solid #642BFF;
+    display: block;
+    margin: 1rem;
+    border-radius: 0.3rem;
+    box-shadow: 1px 1px black;
+}
+
+textarea{
+    width: 100%;
+    height: 6rem;
+}
+
+.create__preview{
+    padding: 1.5rem;
+    border: 1px dashed black;
+    border-radius: 0.5rem;
+}
+
+.create__card__img{
+    width: 100%;
+    height: auto;
+    display: block;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+/* .create__date{
+    width: 50%;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+} */
+.create__amount, .create__date{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+.create__options{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}

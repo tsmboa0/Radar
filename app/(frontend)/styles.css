@@ -1,0 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+.root__landing{
+    padding-inline: 2rem;
+}
+
+nav{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding-block: 1rem;
+    position: sticky;
+    top: 0;
+    /* border: 1px solid black; */
+    background-color: whitesmoke;
+}
+
+.nav__links{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 260px;
+}
+
+.nav__button{
+    padding:0.7rem;
+    border-radius:0.5rem;
+    background-color: hsla(0, 0%, 0%, 0.9);
+    color: white;
+    /* height: 2.6rem; */
+    font-weight: bold;
+}
+
+.hero__section{
+    background-color: hsla(0, 0%, 0%, 0.9);
+    color: whitesmoke;
+    border-radius: 1.5rem;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 3rem;
+    /* min-height: 100vh; */
+}
+
+.hero__text{
+    margin-block: 3rem;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+    color: rgba(245, 245, 245, 0.749);
+    font-family: "Roboto" sans-serif;
+}
+.hero__text__h1{
+    font-size: 4.5vw;
+    color: whitesmoke;
+    width: 70%;
+    text-align: center;
+    font-family: "Roboto" sans-serif;
+    font-weight: bold;
+}
+.hero__text__p{
+    width: 60%;
+    text-align: center;
+    font-family: "Roboto" sans-serif;
+    font-size: 1.6vw;
+}
+.hero__image{
+    width: 60%;
+    height: auto;
+}
+.main__section1{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    background-color: whitesmoke;
+    margin-top: 5rem;
+    padding: 3rem;
+}
+
+.section1__text{
+    padding: 2rem;
+    font-family: "Roboto" sans-serif;
+}
+.section1__h1{
+    font-size: 3vw;
+    font-weight: bold;
+    font-family: "Roboto" sans-serif;
+}
+.section1__button{
+    padding: 0.4rem;
+    background-color: black;
+    color: whitesmoke;
+    border-radius: 0.4rem;
+    font-family: "Roboto" sans-serif;
+}
+.section1__image_div{
+    width: 50%;
+}
+.section1__image{
+    width: 100%;
+    height: auto;
+}
+
+.main__section2{
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+.section2__h1{
+    font-size: 4vw;
+    font-weight: bold;
+    font-family: "Roboto" sans-serif;
+    text-align: center;
+}
+.section2__image{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.array__image{
+    width: 50%;
+    height: auto;
+}
+
+.blackBotton{
+    background-color: black;
+    border: none;
+}
+
+/* Play section */
+.main__play{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+.play__section{
+    width: 30rem;
+    border: 2px dashed black;
+    border-radius: 1rem;
+    padding: 3rem;
+    margin-top: 4rem;
+    /* box-shadow: 1px 1px 1px; */
+}
+.play__image{
+    width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    margin-bottom: 0.7rem;
+}
+.play__options{
+    display: flex;
+    flex-flow: column wrap;
+    width: 100%;
+}
+.play__betAmount{
+    display: block;
+    width: 100%;
+    height: 30px;
+    border-radius: 0.3rem;
+    border: 1px solid black;
+    padding-inline: 0.4rem;
+    margin-block: 0.4rem;
+}
+.play__options{
+    display: flex;
+    flex-flow: column wrap;
+    row-gap: 1rem;
+    margin-top: 1rem;
+}
+
+@media screen and (max-width: 700px) {
+    .root__landing{
+        padding: 0.2rem;
+    }
+    nav{
+        padding-inline: 0.3rem;
+    }
+    .hero__image{
+        width: 100%;
+    }
+    .hero__section{
+        padding: 1rem;
+    }
+    .hero__text__h1{
+        font-size: 30px;
+        width: 80%;
+        font-weight: bold;
+    }
+    .hero__text__p{
+        width: 95%;
+        font-size: 4vw;
+    }
+    .main__section1{
+        margin-top: 3rem;
+        padding: 1.6rem;
+        flex-flow: row wrap;
+    }
+    .section1__h1{
+        font-size: 25px;
+    }
+    .section2__h1{
+        font-size: 25px;
+    }
+    /* play section */
+    .play__section{
+        width: 90%;
+        padding: 1.5rem;
+        margin-top: 2.5rem;
+    }
+}
