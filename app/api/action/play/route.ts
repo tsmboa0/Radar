@@ -20,10 +20,12 @@ const connection = new Connection(clusterApiUrl("devnet"), 'finalized');
 
 const headers = createActionHeaders();
 
-export const GET = async(req:Request, {params}:{params: {slug:string}})=>{
-    const pda = params.slug;
+export const GET = async(req:Request)=>{
+    const url = new URL(req.url);
+    const pda = url.searchParams.get("id") as string;
     const formData = new FormData();
     formData.append("pda", pda);
+    console.log("the pda from the url is: ",pda);
 
     console.log("starting the try block in blinks");
 
@@ -97,10 +99,12 @@ export const GET = async(req:Request, {params}:{params: {slug:string}})=>{
 
 export const OPTIONS = async()=> Response.json(null, {headers});
 
-export const POST = async(req:Request, {params}:{params: {slug:string}})=>{
-    console.log("inside post request from blinks and the pda is: ", params.slug);
+export const POST = async(req:Request)=>{
+    const url = new URL(req.url);
+    const pda = url.searchParams.get("id") as string;
+    console.log("inside post request from blinks and the pda is: ", pda);
     const data = new FormData();
-    data.append("pda", params.slug);
+    data.append("pda", pda);
     const pool = await getPoolDetails(data);
     const result = JSON.parse(pool);
     console.log("pool fetched..");
@@ -111,7 +115,6 @@ export const POST = async(req:Request, {params}:{params: {slug:string}})=>{
     const body: ActionPostRequest = await req.json();
     const userAccount = new PublicKey(body.account);
     const userOption = new anchor.BN(1);
-    const url : any = new URL(req.url);
     const betAmount = new anchor.BN(0.1 * LAMPORTS_PER_SOL);
 
     console.log("the amount is: ",betAmount);

@@ -5,11 +5,11 @@ export const GET = async () => {
     rules: [
       {
         pathPattern: "/play/*",
-        apiPath: "/api/action/play/*",
+        apiPath: "/api/action/play",
       },
       // idempotent rule as the fallback
       {
-        pathPattern: "/api/action/play/**",
+        pathPattern: "/api/action/play",
         apiPath: "/api/action/play/**",
       },
     ],
