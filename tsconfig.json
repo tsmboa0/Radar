@@ -21,6 +21,6 @@
       "*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "solana/walletContextProvider.tsx", "app/api/server/blockchain/route.js", "app/(frontend)/layout.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "solana/walletContextProvider.tsx", "app/api/server/blockchain/route.ts", "app/(frontend)/layout.js"],
   "exclude": ["node_modules"]
 }

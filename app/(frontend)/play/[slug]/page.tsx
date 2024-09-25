@@ -23,11 +23,11 @@ const Play = ({params}:{params: {slug : String}}) => {
     const wallet = useWallet();
     const {publicKey} = useWallet();
     const {connection} = useConnection();
+    const _pda = params.slug as string;
 
     useEffect(()=>{
-        const pda = params.slug as string;
         const data = new FormData();
-        data.append("pda", pda);
+        data.append("pda", _pda);
 
         const _getPoolDetails = async()=>{
             const result : any = await getPoolDetails(data);
@@ -40,7 +40,7 @@ const Play = ({params}:{params: {slug : String}}) => {
         }
 
         _getPoolDetails();
-    }, []);
+    }, [_pda]);
 
     const Bet = async(option:number)=>{
         if (!publicKey) {

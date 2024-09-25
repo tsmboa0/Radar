@@ -13,10 +13,11 @@ const Home = () => {
     const {data: session, status} = useSession();
     const [pools, setPools] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const _user = session?.user?.id;
 
     useEffect(()=>{
         const data = new FormData();
-        data.append("user", session?.user?.id);
+        data.append("user", _user);
         const fetchPools = async()=>{
             console.log("starting pools fetch...");
             const response = await getManagerPools(data);
@@ -28,7 +29,7 @@ const Home = () => {
         }
 
         fetchPools();
-    },[]);
+    },[_user]);
 
     return (
         <Fragment>
@@ -52,8 +53,8 @@ const Home = () => {
                         pools ? (
                             pools.map((item, index) => {
                                 return (
-                                    <Card style={{ width: '10rem' }}>
-                                        <Image variant="top" src={item.uploadUrl} width={100} height={100} style={{ width: '100%', height:'auto' }} />
+                                    <Card style={{ width: '10rem' }} key={index}>
+                                        <Image variant="top" src={item.uploadUrl} width={100} height={100} style={{ width: '100%', height:'auto' }} alt="Pool Image"/>
                                         <Card.Body>
                                             <h6 style={{margin: '0', fontWeight:'bold', color:'black'}}>{item.poolTitle}</h6>
                                             <Card.Text style={{fontSize:'12px'}}>

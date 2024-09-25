@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 
 
 
-const trueOrFalse = () => {
+const TrueOrFalse = () => {
     const router = useRouter();
 
     const {publicKey} = useWallet();
@@ -167,4 +167,4 @@ const trueOrFalse = () => {
   )
 }
 
-export default trueOrFalse
+export default TrueOrFalse

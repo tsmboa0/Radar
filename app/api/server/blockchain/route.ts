@@ -1,8 +1,10 @@
 // "use server"
+// @ts-nocheck
 
 import * as anchor from "@project-serum/anchor";
 import {AnchorWallet } from "@solana/wallet-adapter-react";
 import { createPoolDb, setDbResult } from "../database/route";
+// import getProvider from "utils/program/provider";
 
 import idl from "utils/program/idl.json";
 import { PublicKey, SystemProgram, Connection, clusterApiUrl, SIGNATURE_LENGTH_IN_BYTES } from "@solana/web3.js";
@@ -13,11 +15,10 @@ const programID = new anchor.web3.PublicKey("7CrcbfqyecWEZXDGXVtQMDDeyjcHtScSjCL
 const commitment = "processed";
 
 export const getProvider = (connection:any, wallet:any)=>{
-    const _connection = new Connection(clusterApiUrl("devnet"));
-    const provider = new anchor.AnchorProvider(_connection, wallet as AnchorWallet, {
+    const provider = new anchor.AnchorProvider(connection, wallet as AnchorWallet, {
         preflightCommitment: commitment
     });
-    const program = new anchor.Program(JSON.parse(JSON.stringify(idl)), programID, provider);
+    const program = new anchor.Program(JSON.parse(JSON.stringify(idl)) as any, programID, provider);
 
     return program
 }

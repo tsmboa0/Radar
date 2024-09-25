@@ -3,6 +3,7 @@
 
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import dynamic from "next/dynamic";
 
 const ConnectWalletButton = ()=>{
     const { publicKey } = useWallet();
@@ -14,4 +15,6 @@ const ConnectWalletButton = ()=>{
     )
 }
 
-export default ConnectWalletButton;
+export default dynamic(()=> Promise.resolve(ConnectWalletButton), {
+    ssr: false
+});
