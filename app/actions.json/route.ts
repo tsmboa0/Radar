@@ -1,19 +1,26 @@
-import { ACTIONS_CORS_HEADERS, ActionsJson } from "@solana/actions"
+import { ACTIONS_CORS_HEADERS, ActionsJson, createActionHeaders } from "@solana/actions";
+
+
+const headers = createActionHeaders();
 
 export const GET = async()=>{
 
     const payload : ActionsJson ={
         rules: [
             {
-                pathPattern: "/play/*",
-                apiPath: "/api/action/play/[slug]"
-            }
+                pathPattern: "/play/:slug",
+                apiPath: "/api/action/play/:slug"
+            },
+            // idempotent rule as the fallback
+            {
+                pathPattern: "/api/actions/play/**",
+                apiPath: "/api/actions/play/**",
+            },
         ]
     } ;
 
-
     return Response.json(payload, {
-        headers: ACTIONS_CORS_HEADERS
+        headers
     })
 }
 

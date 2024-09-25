@@ -1,5 +1,5 @@
 
-import { ActionGetRequest, ActionPostRequest, ActionPostResponse, ACTIONS_CORS_HEADERS, createPostResponse } from "@solana/actions"
+import { ActionGetRequest, ActionPostRequest, ActionPostResponse, ACTIONS_CORS_HEADERS, createActionHeaders, createPostResponse } from "@solana/actions"
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey, Transaction, SystemProgram, TransactionInstruction, Keypair } from "@solana/web3.js";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -17,6 +17,8 @@ const _program = "7CrcbfqyecWEZXDGXVtQMDDeyjcHtScSjCLecgbPtAQC"
 
 const connection = new Connection(clusterApiUrl("devnet"), 'finalized');
 // const provider = new anchor.AnchorProvider(connection, wallet: as AnchorWallet);
+
+const headers = createActionHeaders();
 
 export const GET = async(req:Request, {params}:{params: {slug:string}})=>{
     const pda = params.slug;
@@ -86,14 +88,14 @@ export const GET = async(req:Request, {params}:{params: {slug:string}})=>{
         }
 
         return Response.json(payload, {
-            headers: ACTIONS_CORS_HEADERS
+            headers
         });
     }catch(e){
         console.log("failed to generate blinks",e)
     }
 }
 
-export const OPTIONS = GET;
+export const OPTIONS = async()=> Response.json(null, {headers});
 
 export const POST = async(req:Request, {params}:{params: {slug:string}})=>{
     console.log("inside post request from blinks and the pda is: ", params.slug);
@@ -178,7 +180,7 @@ export const POST = async(req:Request, {params}:{params: {slug:string}})=>{
         });
 
         return Response.json(payload, {
-            headers: ACTIONS_CORS_HEADERS
+            headers
         });
     }
 }
