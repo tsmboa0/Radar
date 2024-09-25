@@ -1,7 +1,7 @@
 "use client"
 import { getPoolDetails } from 'app/api/server/database/route';
 import { PlaceBet } from 'app/api/server/blockchain/route';
-import "../../styles.css";
+import "../styles.css";
 
 import Image from 'next/image'
 import betlify from "public/images/brand/betlifyiconbg.jpg";

@@ -5,9 +5,9 @@ import Link from 'next/link';
 import '../styles/theme.scss';
 
 export const metadata = {
-    title: 'Betlify | No-code decentralized bet pools creation platform',
-    description: 'Betlify - Turn Your Social Media Followers And Engagement Into Instant Money Machine By Creating A Bet Pool Around Short-Lived Hype',
-    keywords: 'Betlify, Betting, Decentralized, Pool Creation Platform, Social Media Montization'
+    title: "Betlify |Solana's First No-code Prediction Market Builder",
+    description: 'Betlify - Turn Your Social Media Followers And Engagement Into Instant Money Machine By Creating A Bet Pool Around Every Hype',
+    keywords: 'Betlify, Betting, Decentralized,No-Code Prediction Market Builder, Solana, Pool Creation Platform, Social Media Montization'
 }
 
 export default function RootLayout({ children }) {
