@@ -33,7 +33,7 @@ const SignIn = () => {
                     <Button variant="primary" name="provider" value="google" type="submit"><Google /> Sign In With Google</Button>
                   </div> */}
                   <div className="d-grid">
-                    <Button variant="primary" style={{backgroundColor:'black', color:'whitesmoke'}} name="provider" value="twitter" type="submit"><TwitterX/> Sign In With X</Button>
+                    <Button variant="primary" style={{backgroundColor:'black', color:'whitesmoke', border:'none'}} name="provider" value="twitter" type="submit"><TwitterX/> Sign In With X</Button>
                   </div>
                 </div>
               </Form>
