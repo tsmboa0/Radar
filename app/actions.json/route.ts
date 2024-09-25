@@ -1,4 +1,4 @@
-import { createActionHeaders, type ActionsJson } from "@solana/actions";
+import { ACTIONS_CORS_HEADERS, createActionHeaders, type ActionsJson } from "@solana/actions";
 
 export const GET = async () => {
   const payload: ActionsJson = {
@@ -6,20 +6,14 @@ export const GET = async () => {
       {
         pathPattern: "/play",
         apiPath: "/api/action/play",
-      },
-      // idempotent rule as the fallback
-    //   {
-    //     pathPattern: "/api/action/play/**",
-    //     apiPath: "/api/action/play/**",
-    //   },
+      }
     ],
   };
 
   return Response.json(payload, {
-    headers: createActionHeaders(),
+    headers: ACTIONS_CORS_HEADERS,
   });
 };
 
-// DO NOT FORGET TO INCLUDE THE `OPTIONS` HTTP METHOD
-// THIS WILL ENSURE CORS WORKS FOR BLINKS
-export const OPTIONS = GET;
+
+export const OPTIONS = GET; 
