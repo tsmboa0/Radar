@@ -1,4 +1,5 @@
 "use client"
+
 import { getPoolDetails } from 'app/api/server/database/route';
 import { PlaceBet } from 'app/api/server/blockchain/route';
 import "../styles.css";
@@ -12,12 +13,15 @@ import { Button } from 'react-bootstrap';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { claimWinnings } from 'app/api/server/blockchain/route';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const Play = () => {
     const router = useRouter();
-    const {id} = router.query
-    console.log("the pool id is: ", id);
+
+    const url = new URLSearchParams(window.location.search);
+    const id = url.get("id");
+    console.log("the pool id is: ",id);
+
     const [poolDetails, setPoolDetails] = useState({poolTitle: "Post Title", result:1, endTime:1783526, manager:"manger", pda:"pda", desc:"Pool Description", option1:"option1", option2:"option2", uploadUrl:betlify, minBetAmount:0.01});
     const [pda, setPda] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -26,9 +30,9 @@ const Play = () => {
     const wallet = useWallet();
     const {publicKey} = useWallet();
     const {connection} = useConnection();
-    const _pda = id as string;
 
     useEffect(()=>{
+        const _pda = id as string;
         const data = new FormData();
         data.append("pda", _pda);
 
@@ -43,7 +47,7 @@ const Play = () => {
         }
 
         _getPoolDetails();
-    }, [_pda]);
+    }, []);
 
     const Bet = async(option:number)=>{
         if (!publicKey) {
