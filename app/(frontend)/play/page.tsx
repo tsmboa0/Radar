@@ -13,13 +13,12 @@ import { Button } from 'react-bootstrap';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { claimWinnings } from 'app/api/server/blockchain/route';
-import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 const Play = () => {
-    const router = useRouter();
-
-    const url = new URLSearchParams(window.location.search);
-    const id = url.get("id");
+    const params = useSearchParams();
+    
+    const id = params.get("id");
     console.log("the pool id is: ",id);
 
     const [poolDetails, setPoolDetails] = useState({poolTitle: "Post Title", result:1, endTime:1783526, manager:"manger", pda:"pda", desc:"Pool Description", option1:"option1", option2:"option2", uploadUrl:betlify, minBetAmount:0.01});
@@ -32,6 +31,8 @@ const Play = () => {
     const {connection} = useConnection();
 
     useEffect(()=>{
+        if(!id) return;
+        
         const _pda = id as string;
         const data = new FormData();
         data.append("pda", _pda);

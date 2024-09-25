@@ -10,9 +10,11 @@ import Link from 'next/link';
 // import hooks
 import useMounted from 'hooks/useMounted';
 import { Google, TwitterX } from 'react-bootstrap-icons';
+import { useSearchParams } from 'next/navigation';
 
 const SignIn = () => {
   const hasMounted = useMounted();
+  const search = useSearchParams();
   return (
     <Row className="align-items-center justify-content-center g-0 min-vh-100" style={{borderTop:'2px solid black'}}>
       <Col xxl={4} lg={6} md={8} xs={12} className="py-8 py-xl-0">

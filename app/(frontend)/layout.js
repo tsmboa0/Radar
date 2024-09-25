@@ -3,6 +3,7 @@ import "./styles.css"
 import betlify from "public/images/brand/betlifyiconbg.jpg"
 import ConnectWalletButton from "solana/connectWalletButton";
 import Link from "next/link";
+import { Suspense } from "react";
 
 
 
@@ -18,7 +19,9 @@ export default function FronEndLayout({ children }){
                     <ConnectWalletButton />
                 </section>
             </nav>
-            {children}
+            <Suspense>
+                {children}
+            </Suspense>
         </div>
     )
 }
