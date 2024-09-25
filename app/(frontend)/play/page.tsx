@@ -12,9 +12,12 @@ import { Button } from 'react-bootstrap';
 import { useWallet, useConnection } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { claimWinnings } from 'app/api/server/blockchain/route';
+import { useRouter } from 'next/router';
 
-const Play = ({params}:{params: {slug : String}}) => {
-    console.log("the pool id is: ", params.slug);
+const Play = () => {
+    const router = useRouter();
+    const {id} = router.query
+    console.log("the pool id is: ", id);
     const [poolDetails, setPoolDetails] = useState({poolTitle: "Post Title", result:1, endTime:1783526, manager:"manger", pda:"pda", desc:"Pool Description", option1:"option1", option2:"option2", uploadUrl:betlify, minBetAmount:0.01});
     const [pda, setPda] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +26,7 @@ const Play = ({params}:{params: {slug : String}}) => {
     const wallet = useWallet();
     const {publicKey} = useWallet();
     const {connection} = useConnection();
-    const _pda = params.slug as string;
+    const _pda = id as string;
 
     useEffect(()=>{
         const data = new FormData();

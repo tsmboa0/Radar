@@ -4,14 +4,14 @@ export const GET = async () => {
   const payload: ActionsJson = {
     rules: [
       {
-        pathPattern: "/play/*",
+        pathPattern: "/play",
         apiPath: "/api/action/play",
       },
       // idempotent rule as the fallback
-      {
-        pathPattern: "/api/action/play",
-        apiPath: "/api/action/play/**",
-      },
+    //   {
+    //     pathPattern: "/api/action/play/**",
+    //     apiPath: "/api/action/play/**",
+    //   },
     ],
   };
 

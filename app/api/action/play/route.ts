@@ -10,7 +10,6 @@ import _idl from "utils/program/idl.json";
 const idl = JSON.parse(JSON.stringify(_idl));
 
 import { getPoolDetails } from "app/api/server/database/route";
-import { URLSearchParams } from "url";
 
 const PROGRAM_ID = new PublicKey("7CrcbfqyecWEZXDGXVtQMDDeyjcHtScSjCLecgbPtAQC");
 const _program = "7CrcbfqyecWEZXDGXVtQMDDeyjcHtScSjCLecgbPtAQC"
@@ -21,6 +20,7 @@ const connection = new Connection(clusterApiUrl("devnet"), 'finalized');
 const headers = createActionHeaders();
 
 export const GET = async(req:Request)=>{
+    console.log("get request received...");
     const url = new URL(req.url);
     const pda = url.searchParams.get("id") as string;
     const formData = new FormData();
@@ -52,7 +52,7 @@ export const GET = async(req:Request)=>{
                     actions: [
                         {
                             label: "Claim Winnings",
-                            href: `/api/action/play/${pda}?claim=true`
+                            href: `/api/action/play?id=${pda}&claim=true`
                         }
                     ]
                 }
@@ -66,7 +66,7 @@ export const GET = async(req:Request)=>{
                     actions : [
                         {
                             label: option1,
-                            href: `/api/action/play/${pda}?amount={amount}&option=1`,
+                            href: `/api/action/play?id=${pda}&amount={amount}&option=1`,
                             parameters:[
                                 {
                                     name: "amount",
@@ -76,7 +76,7 @@ export const GET = async(req:Request)=>{
                         },
                         {
                             label: option2,
-                            href: `/api/action/play/${pda}?amount={amount}&option=2`,
+                            href: `/api/action/play?id=${pda}&amount={amount}&option=2`,
                             parameters:[
                                 {
                                     name: "amount",
