@@ -4,7 +4,7 @@ import { Col, Row, Image, Container } from 'react-bootstrap';
 import Link from 'next/link';
 
 // import hooks
-import useMounted from '../hooks/useMounted';
+import useMounted from '/hooks/useMounted';
 import { Fragment } from 'react';
 
 const NotFound = () => {

@@ -60,6 +60,8 @@ export const GET = async(req:Request)=>{
         const trueOdd = (no_of_true/total).toFixed(2);
         const falseOdd = (no_of_false/total).toFixed(2);
         console.log("the total is: ",total);
+        console.log("the no of true is: ",no_of_true);
+        console.log("the no of false is: ",no_of_false);
 
         let payload: ActionGetRequest;
 

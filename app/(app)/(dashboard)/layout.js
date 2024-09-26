@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { SessionProvider } from 'next-auth/react';
 
 // import theme style scss file
-import '../../styles/theme.scss';
+import '/styles/theme.scss';
 
 // import sub components
 import NavbarVertical from '/layouts/navbars/NavbarVertical';

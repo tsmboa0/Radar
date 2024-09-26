@@ -2,7 +2,7 @@
 
 import WalletContextProvider from 'solana/walletContextProvider';
 import Link from 'next/link';
-import '../styles/theme.scss';
+import '/styles/theme.scss';
 
 export const metadata = {
     title: "Betlify |Solana's First No-code Prediction Market Builder",

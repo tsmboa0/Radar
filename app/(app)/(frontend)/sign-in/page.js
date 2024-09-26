@@ -1,6 +1,6 @@
 'use client'
 
-import { loginAction } from '../../api/server/route';
+import { loginAction } from '../../../api/server/route';
 import { getCsrfToken } from 'next-auth/react';
 
 // import node module libraries
