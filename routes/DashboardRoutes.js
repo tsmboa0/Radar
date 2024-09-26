@@ -5,7 +5,7 @@ export const DashboardMenu = [
 		id: 1,
 		title: 'Dashboard',
 		icon: 'home',
-		link: '/'
+		link: '/dashboard'
 	},
 	{
 		id: 2,

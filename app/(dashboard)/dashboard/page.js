@@ -13,7 +13,9 @@ const Home = () => {
     const {data: session, status} = useSession();
     const [pools, setPools] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const _user = session?.user?.id;
+    const [noPool, setNoPool] = useState(true);
+    const _user = session?.user?.name;
+    console.log(session?.user);
 
     useEffect(()=>{
         const data = new FormData();
@@ -21,11 +23,17 @@ const Home = () => {
         const fetchPools = async()=>{
             console.log("starting pools fetch...");
             const response = await getManagerPools(data);
-            const result = [...JSON.parse(response)];
-            console.log("pool 0 poolTitle is: ",result[0].poolTitle);
+            if(response !== null){
+                const result = [...JSON.parse(response)];
+                console.log("pool 0 poolTitle is: ",result[0].poolTitle);
+                setPools(result);
+                setIsLoading(false);
+            }else{
+                console.log("no pools");
+                setNoPool(true);
+                setIsLoading(false);
+            }
 
-            setPools(result);
-            setIsLoading(false);
         }
 
         fetchPools();
@@ -39,7 +47,7 @@ const Home = () => {
                         <div>
                             <div className="d-flex justify-content-between align-items-center" style={{marginTop:'1rem'}}>
                                 <div className="mb-2 mb-lg-0">
-                                    <h3 className="mb-0  text-black" style={{fontWeight:'bold'}}>Welcome {session?.user?.id}</h3>
+                                    <h3 className="mb-0  text-black" style={{fontWeight:'bold'}}>Welcome {session?.user?.name}</h3>
                                 </div>
                                 <div>
                                     <Link href="/create" className="btn btn-white" style={{backgroundColor:'black', color:'whitesmoke'}}>Create New Pool</Link>
@@ -50,7 +58,7 @@ const Home = () => {
                 </Row>
                 <section style={{display:'flex', flexFlow:'row wrap', gap:'0.9rem', justifyContent:'center', alignItems:'center'}}>
                     {!isLoading ? (
-                        pools ? (
+                        pools.length > 0 ? (
                             pools.map((item, index) => {
                                 return (
                                     <Card style={{ width: '10rem' }} key={index}>

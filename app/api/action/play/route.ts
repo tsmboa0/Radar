@@ -22,10 +22,11 @@ const headers = createActionHeaders();
 export const GET = async(req:Request)=>{
     console.log("get request received...");
     const url = new URL(req.url);
-    const pda = url.searchParams.get("id") as string;
+    const pda : any = url.searchParams.get("id");
     const formData = new FormData();
-    formData.append("pda", pda);
+    formData.append("pda", pda as string);
     console.log("the pda from the url is: ",pda);
+    const poolPDA =  new PublicKey(pda);
 
     console.log("starting the try block in blinks");
 
@@ -40,6 +41,25 @@ export const GET = async(req:Request)=>{
         const option1 = result.option1;
         const option2 = result.option2;
         const icon = result.uploadUrl;
+
+        //fetch data from blockchain
+        const provider = new anchor.AnchorProvider(
+            connection,
+            {
+                publicKey: PROGRAM_ID,
+                signTransaction: async (tx: Transaction) => tx,
+                signAllTransactions: async (txs: Transaction[]) => txs,
+            },
+            {preflightCommitment: 'confirmed'}
+        )
+        const program = new anchor.Program(idl,PROGRAM_ID,provider);
+        const detailOnchain : any = await program.account.trueOrFalsePool.fetch(poolPDA);
+        const no_of_true : number = (detailOnchain.noOfTrue).toNumber() + 100000000;
+        const no_of_false : number = (detailOnchain.noOfFalse).toNumber() + 100000000;
+        const total : number = (no_of_true + no_of_false);
+        const trueOdd = (no_of_true/total).toFixed(2);
+        const falseOdd = (no_of_false/total).toFixed(2);
+        console.log("the total is: ",total);
 
         let payload: ActionGetRequest;
 
@@ -65,24 +85,32 @@ export const GET = async(req:Request)=>{
                 links: {
                     actions : [
                         {
-                            label: option1,
+                            label: `Buy ${option1} $${trueOdd}`,
                             href: `/api/action/play?id=${pda}&amount={amount}&option=1`,
                             parameters:[
                                 {
                                     name: "amount",
-                                    label: "Enter Bet Amount"
+                                    label: "Enter Buy Amount"
                                 }
                             ]
                         },
                         {
-                            label: option2,
+                            label: `Buy ${option2} $${falseOdd}`,
                             href: `/api/action/play?id=${pda}&amount={amount}&option=2`,
                             parameters:[
                                 {
                                     name: "amount",
-                                    label: "Enter Bet Amount"
+                                    label: "Enter Buy Amount"
                                 }
                             ]
+                        },
+                        {
+                            label: "Sell "+option1,
+                            href: `/api/action/play?id=${pda}&amount={amount}&option=1&sell=true`,
+                        },
+                        {
+                            label: "Sell "+option2,
+                            href: `/api/action/play?id=${pda}&amount={amount}&option=2&sell=true`,
                         }
                     ]
                 }

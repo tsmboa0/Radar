@@ -24,8 +24,14 @@ export const {
         twitter({
             clientId: process.env.TWITTER_CLIENT_ID,
             clientSecret: process.env.TWITTER_CLIENT_SECRET,
-            version: "2.0"
-        })
-
-    ]
+            version: "2.0",
+        }),
+    ],
+    // callbacks: {
+    //   session({ session, user }) {
+    //     session.user.id = user.id
+    //     return session
+    //   },
+    // },
+  
 })

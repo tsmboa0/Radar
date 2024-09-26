@@ -31,7 +31,7 @@ export async function createPoolDb(formData : FormData){
     console.log("auth gotten..")
     await connectDb();
 
-    const user = session?.user?.id || "tsmboa";
+    const user = session?.user?.name;
     const poolTitle = formData.get("poolName");
     console.log("postTitle is, ",poolTitle);
     const desc = formData.get("desc");
@@ -109,8 +109,13 @@ export async function getManagerPools(formData : FormData){
     await connectDb();
     console.log("Pool initialized...");
 
-    const managerPools = await Pool.find({user: "tsmboa"});
-    console.log("manager pools fetched", managerPools);
+    const managerPools = await Pool.find({user: user});
+    if (managerPools.length > 0){
+        console.log("manager pools fetched", managerPools);
 
-    return JSON.stringify(managerPools);
+        return JSON.stringify(managerPools);
+    }else{
+        return null;
+    }
+    
 }

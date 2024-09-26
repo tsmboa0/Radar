@@ -59,7 +59,7 @@ const TrueOrFalse = () => {
         console.log("entered createpoolbutton");
 
         if(!publicKey) {
-            console.log("Please Connect Your Wallet First.")
+            alert("Connect your wallet first");
         }
         else{
             setDisable(true);
