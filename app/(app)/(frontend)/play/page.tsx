@@ -1,7 +1,9 @@
 "use client"
 
 import { getPoolDetails } from 'app/api/server/database/route';
+import { onchainPoolDetails } from 'app/api/server/blockchain/route';
 import { PlaceBet } from 'app/api/server/blockchain/route';
+import { sellPosition } from 'app/api/server/blockchain/route';
 import "../styles.css";
 
 import Image from 'next/image'
@@ -21,10 +23,11 @@ const Play = () => {
     const id = params.get("id");
     console.log("the pool id is: ",id);
 
-    const [poolDetails, setPoolDetails] = useState({poolTitle: "Post Title", result:1, endTime:1783526, manager:"manger", pda:"pda", desc:"Pool Description", option1:"option1", option2:"option2", uploadUrl:betlify, minBetAmount:0.01});
+    const [poolDetails, setPoolDetails] = useState({poolTitle: "Post Title", result:1,lockTime:1787265359, endTime:1783526, manager:"manger", pda:"pda", desc:"Pool Description", option1:"option1", option2:"option2", uploadUrl:betlify, minBetAmount:0.01});
     const [pda, setPda] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [betAmount, setBetAmount] = useState("");
+    const [onChainDetails, setOnchainDetails] = useState(null);
 
     const wallet = useWallet();
     const {publicKey} = useWallet();
@@ -41,6 +44,9 @@ const Play = () => {
             const result : any = await getPoolDetails(data);
             console.log("the pool title is: ",(JSON.parse(result)).poolTitle);
             console.log("the pda is: ",(JSON.parse(result)).pda);
+
+            const onchain = await onchainPoolDetails(connection, wallet, _pda);
+            setOnchainDetails(JSON.parse(onchain));
 
             setPoolDetails(JSON.parse(result));
             setPda((JSON.parse(result)).pda);
@@ -83,6 +89,20 @@ const Play = () => {
         const response = await claimWinnings(connection, wallet, poolDetails.poolTitle, poolDetails.manager, poolDetails.pda);
         console.log(response.message);
     }
+    const Sell = async(position:number)=>{
+        if (!publicKey) {
+            alert("Please connect your wallet first");
+            return;
+        }
+        if ((parseInt((poolDetails.lockTime).toString())*1000) < (Math.floor(new Date().getTime()))) {
+            alert("Reverted... Event already started or Pool already locked");
+            return;
+        };
+        console.log("Starting sell...")
+
+        const response = await sellPosition(connection, wallet, poolDetails.poolTitle, poolDetails.manager, poolDetails.pda, position);
+        console.log(response.message);
+    }
 
 
   return (
@@ -118,19 +138,21 @@ const Play = () => {
                         <Image src={poolDetails.uploadUrl} width={500} height={281} className='play__image' alt="Pool Image" />
                     </div>
                     <div className='play__title'>
-                        <h1>{poolDetails.poolTitle}</h1>
+                        <h2>{poolDetails.poolTitle}</h2>
                     </div>
                     <div className='play__desc'>
-                        <h4>{poolDetails.desc}</h4>
+                        <h5>{poolDetails.desc}</h5>
                     </div>
                     <div>
-                        <label htmlFor='betAmount'>Bet Amount </label>
-                        <input type='number' className='play__betAmount' onChange={(e)=>setBetAmount(e.target.value)} value={betAmount} name='betAmount' placeholder={`Enter Bet Amount min of 0.1 SOL`} />
+                        <label htmlFor='betAmount'>Buy Amount </label>
+                        <input type='number' className='play__betAmount' onChange={(e)=>setBetAmount(e.target.value)} value={betAmount} name='betAmount' placeholder={`Enter Buy Amount`} />
                     </div>
                     <div className='play__options'>
-                        <Button style={{backgroundColor:'black', border:'none'}} onClick={()=>Bet(1)}>Bet on {poolDetails.option1}</Button>
-                        <Button style={{backgroundColor:'black', border:'none'}} onClick={()=>Bet(0)}>Bet on {poolDetails.option2}</Button>
-                    </div>
+                        <Button style={{backgroundColor:'black', border:'none'}} onClick={()=>Bet(1)}>Buy {poolDetails.option1} Shares </Button>
+                        <Button style={{backgroundColor:'black', border:'none'}} onClick={()=>Bet(2)}>Buy {poolDetails.option2} Shares </Button>
+                        <Button style={{backgroundColor:'black', border:'none'}} onClick={()=>Sell(1)}> Sell All {poolDetails.option1} Shares </Button>
+                        <Button style={{backgroundColor:'black', border:'none'}} onClick={()=>Sell(2)}>Sell All {poolDetails.option2} Shares </Button>
+                </div>
                 </section>
             )
         )

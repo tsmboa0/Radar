@@ -11,8 +11,8 @@ const idl = JSON.parse(JSON.stringify(_idl));
 
 import { getPoolDetails } from "app/api/server/database/route";
 
-const PROGRAM_ID = new PublicKey("7CrcbfqyecWEZXDGXVtQMDDeyjcHtScSjCLecgbPtAQC");
-const _program = "7CrcbfqyecWEZXDGXVtQMDDeyjcHtScSjCLecgbPtAQC"
+const PROGRAM_ID = new PublicKey("BPkp6UKXSFBVjkw8Zk4mxS2AYd7UHwxrJM8xSRSMov8K");
+const _program = "BPkp6UKXSFBVjkw8Zk4mxS2AYd7UHwxrJM8xSRSMov8K"
 
 const connection = new Connection(clusterApiUrl("devnet"), 'finalized');
 // const provider = new anchor.AnchorProvider(connection, wallet: as AnchorWallet);
@@ -54,8 +54,8 @@ export const GET = async(req:Request)=>{
         )
         const program = new anchor.Program(idl,PROGRAM_ID,provider);
         const detailOnchain : any = await program.account.trueOrFalsePool.fetch(poolPDA);
-        const no_of_true : number = (detailOnchain.noOfTrue).toNumber() + 100000000;
-        const no_of_false : number = (detailOnchain.noOfFalse).toNumber() + 100000000;
+        const no_of_true : number = (detailOnchain.noOfTrue).toNumber();
+        const no_of_false : number = (detailOnchain.noOfFalse).toNumber();
         const total : number = (no_of_true + no_of_false);
         const trueOdd = (no_of_true/total).toFixed(2);
         const falseOdd = (no_of_false/total).toFixed(2);
@@ -107,12 +107,14 @@ export const GET = async(req:Request)=>{
                             ]
                         },
                         {
-                            label: "Sell "+option1,
-                            href: `/api/action/play?id=${pda}&amount={amount}&option=1&sell=true`,
-                        },
-                        {
-                            label: "Sell "+option2,
-                            href: `/api/action/play?id=${pda}&amount={amount}&option=2&sell=true`,
+                            label: "Sell Position",
+                            href: `/api/action/play?id=${pda}&amount={amount}&sell=true`,
+                            parameters:[
+                                {
+                                    name: "amount",
+                                    label: "Enter Sell Amount"
+                                }
+                            ]
                         }
                     ]
                 }
@@ -132,6 +134,8 @@ export const OPTIONS = async()=> Response.json(null, {headers});
 export const POST = async(req:Request)=>{
     const url = new URL(req.url);
     const pda = url.searchParams.get("id") as string;
+    const getOption = parseFloat(url.searchParams.get("option") as string);
+    const getAmount = parseFloat(url.searchParams.get("amount") as string);
     console.log("inside post request from blinks and the pda is: ", pda);
     const data = new FormData();
     data.append("pda", pda);
@@ -144,8 +148,8 @@ export const POST = async(req:Request)=>{
 
     const body: ActionPostRequest = await req.json();
     const userAccount = new PublicKey(body.account);
-    const userOption = new anchor.BN(1);
-    const betAmount = new anchor.BN(0.1 * LAMPORTS_PER_SOL);
+    const userOption = new anchor.BN(getOption);
+    const betAmount = new anchor.BN(getAmount * LAMPORTS_PER_SOL);
 
     console.log("the amount is: ",betAmount);
 
@@ -190,7 +194,10 @@ export const POST = async(req:Request)=>{
         return Response.json(payload, {
             headers: ACTIONS_CORS_HEADERS
         });
-    }else{
+    }else if (url.searchParams.has("sell")){
+        ///perform sell operation here...
+    }
+    else{
         console.log("building placebet tx");
         const builtTx = await program.methods.placeBetTf(title, manager, poolId, betAmount, userOption)
         .accounts({

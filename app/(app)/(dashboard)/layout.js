@@ -22,7 +22,7 @@ export default function DashboardLayout({ children }) {
 		<WalletContextProvider>
 			<SessionProvider>
 				<div id="db-wrapper" className={`${showMenu ? '' : 'toggled'}`}>
-					<div className="navbar-vertical navbar">
+					<div className="navbar-vertical navbar" style={{backgroundColor:'black'}}>
 						<NavbarVertical
 							showMenu={showMenu}
 							onClick={(value) => setShowMenu(value)}

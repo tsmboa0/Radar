@@ -15,6 +15,10 @@ nav{
     /* border: 1px solid black; */
     background-color: whitesmoke;
 }
+.nav-logo{
+    width: 170px;
+    height: auto;
+}
 
 .nav__links{
     display: flex;
@@ -127,7 +131,7 @@ nav{
     width: 100%;
 }
 .array__image{
-    width: 50%;
+    width: 25%;
     height: auto;
 }
 
@@ -177,6 +181,17 @@ nav{
     row-gap: 1rem;
     margin-top: 1rem;
 }
+.sell__position{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.8rem;
+    width: 100%;
+}
+.sell__option{
+    width: 50%;
+}
 
 @media screen and (max-width: 700px) {
     .root__landing{
@@ -184,6 +199,13 @@ nav{
     }
     nav{
         padding-inline: 0.3rem;
+    }
+    .nav__links{
+        display: block;
+        width: auto;
+    }
+    .no-small{
+        display: none;
     }
     .hero__image{
         width: 100%;

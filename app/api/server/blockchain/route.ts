@@ -9,7 +9,7 @@ import { createPoolDb, setDbResult } from "../database/route";
 import idl from "utils/program/idl.json";
 import { PublicKey, SystemProgram, Connection, clusterApiUrl, SIGNATURE_LENGTH_IN_BYTES } from "@solana/web3.js";
 
-const programID = new anchor.web3.PublicKey("7CrcbfqyecWEZXDGXVtQMDDeyjcHtScSjCLecgbPtAQC");
+const programID = new anchor.web3.PublicKey("BPkp6UKXSFBVjkw8Zk4mxS2AYd7UHwxrJM8xSRSMov8K");
 // const {connection} = useConnection();
 // const wallet = useWallet() as AnchorWallet;
 const commitment = "processed";
@@ -202,6 +202,34 @@ export const claimWinnings = async(connection:any, wallet:any, title:string, _ma
         return{message: "Winnings claimed successfully."}
     }catch(e){
         return{message: `claimed failed with error message: ${e}`}
+    }
+
+}
+export const sellPosition = async(connection:any, wallet:any, title:string, _manager:string, pda: string, option:number)=>{
+    const program = getProvider(connection, wallet);
+    const poolId = new PublicKey(pda);
+    const manager = new PublicKey(_manager)
+
+    const [poolPDA] = PublicKey.findProgramAddressSync([Buffer.from(title), manager.toBuffer()], program.programId);
+    const [userBetPDA] = PublicKey.findProgramAddressSync([poolId.toBuffer(), wallet.publicKey.toBuffer()], program.programId);
+    const [pool_treasury] = PublicKey.findProgramAddressSync([Buffer.from("treasury"), poolPDA.toBuffer()], program.programId);
+
+    try{
+        const signature = await program.methods.sellPosition(title, manager, poolId, new anchor.BN(option))
+        .accounts({
+            pool: poolPDA,
+            userBet: userBetPDA,
+            poolTreasury: pool_treasury,
+            bettor: wallet.publicKey,
+            SystemProgram: anchor.web3.SystemProgram.programId
+        })
+        .rpc();
+
+        console.log("position sold successfully");
+
+        return{message: "Position Sold successfully."}
+    }catch(e){
+        return{message: `sellPosition failed with error message: ${e}`}
     }
 
 }

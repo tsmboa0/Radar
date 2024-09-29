@@ -7,17 +7,16 @@ import { useMediaQuery } from 'react-responsive';
 import {
 	ListGroup,
 	Card,
-	Image,
+	// Image,
 	Badge,
 } from 'react-bootstrap';
 import Accordion from 'react-bootstrap/Accordion';
-import AccordionContext from 'react-bootstrap/AccordionContext';
-import { useAccordionButton } from 'react-bootstrap/AccordionButton';
-import betlify from "public/images/brand/betlifylogobg.jpg";
+import Image from 'next/image';
+import betlify from "../../public/images/brand/logotrans.png";
 
 // import simple bar scrolling used for notification item scrolling
 import SimpleBar from 'simplebar-react';
-import 'simplebar/dist/simplebar.min.css';
+// import 'simplebar/dist/simplebar.min.css';
 
 // import routes file
 import { DashboardMenu } from 'routes/DashboardRoutes';
@@ -28,19 +27,19 @@ const NavbarVertical = (props) => {
 	const isMobile = useMediaQuery({ maxWidth: 767 });
 
 	return (
-		<Fragment>
-			<SimpleBar style={{ maxHeight: '100vh' }}>
+		<section style={{ backgroundColor:'black' }}>
+			<section style={{ maxHeight: '100vh'}}>
 				<div className="nav-scroller">
-					<Link href="/dashboard" className="navbar-brand">
-						<Image src={betlify} width={152} height={52} style={{width:'100%', height:'auto'}} alt="betlify logo" />
+					<Link href="/dashboard" className="navbar-brand navbar-nav nav-link active">
+						<Image src={betlify} width={150} height={50} style={{}} alt="betlify logo" />
 					</Link>
 				</div>				
 				{/* Dashboard Menu */}
-				<Accordion defaultActiveKey="0" as="ul" className="navbar-nav flex-column">
+				<Accordion className="navbar-nav flex-column">
 					{DashboardMenu.map(function (menu, index) {
 								return (
 									<Card bsPrefix="nav-item" key={index}>
-										<Link href={menu.link} className={`nav-link ${location === menu.link ? 'active' : ''} ${menu.title === 'Download' ? 'bg-primary text-white' : ''}`}>
+										<Link href={menu.link} className={`nav-link ${location === menu.link ? 'active' : ''}`}>
 											{typeof menu.icon === 'string' ? (
 												<i className={`nav-icon fe fe-${menu.icon} me-2`}></i>
 											) : (menu.icon)}
@@ -51,8 +50,8 @@ const NavbarVertical = (props) => {
 							}
 					)}
 				</Accordion>				
-			</SimpleBar>
-		</Fragment>
+			</section>
+		</section>
 	);
 };
 
