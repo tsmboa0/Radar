@@ -61,18 +61,20 @@ const Home = () => {
                         pools.length > 0 ? (
                             pools.map((item, index) => {
                                 return (
-                                    <Card style={{ width: '10rem' }} key={index}>
-                                        <Image variant="top" src={item.uploadUrl} width={100} height={100} style={{ width: '100%', height:'auto' }} alt="Pool Image"/>
-                                        <Card.Body>
-                                            <h6 style={{margin: '0', fontWeight:'bold', color:'black'}}>{item.poolTitle}</h6>
-                                            <Card.Text style={{fontSize:'12px'}}>
-                                                {(item.desc).substring(0,25)}
-                                            </Card.Text>
-                                            <Link href={`/pool/${item.pda}`}>
-                                                <Button variant="primary" style={{padding:'7px', backgroundColor:'black',border:'none'}}>Manage</Button>
-                                            </Link>
-                                        </Card.Body>
-                                    </Card>
+                                    <Col xl={3} lg={4} md={6} sm={6} xs={12} className="mt-6">
+                                        <Card style={{ width: '15rem' }} key={index}>
+                                            <Image variant="top" src={item.uploadUrl} width={100} height={100} style={{ width: '15rem', height:'auto' }} alt="Pool Image"/>
+                                            <Card.Body>
+                                                <h6 style={{margin: '0', fontWeight:'bold', color:'black'}}>{item.poolTitle}</h6>
+                                                <Card.Text style={{fontSize:'12px'}}>
+                                                    {(item.desc).substring(0,25)}
+                                                </Card.Text>
+                                                <Link href={`/pool/${item.pda}`}>
+                                                    <Button variant="primary" style={{padding:'7px', backgroundColor:'black',border:'none'}}>Manage</Button>
+                                                </Link>
+                                            </Card.Body>
+                                        </Card>
+                                    </Col>
                                 )
                             })
                         ): (

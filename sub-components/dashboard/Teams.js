@@ -5,11 +5,14 @@ import React, { useEffect } from "react";
 import Link from 'next/link';
 import { Card, Table, Dropdown, Image, Button } from 'react-bootstrap';
 import { MoreVertical } from 'react-feather';
+import { Clipboard, Clipboard2Check } from "react-bootstrap-icons";
+import { useRouter } from "next/navigation";
 
 // import required data files
 import { getPoolDetails } from "app/api/server/database/route";
 import { onchainPoolDetails } from "app/api/server/blockchain/route";
 import { setResult } from "app/api/server/blockchain/route";
+import { deletePool } from "app/api/server/database/route";
 import { useState } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 const Teams = ({pda}) => {
@@ -27,6 +30,8 @@ const Teams = ({pda}) => {
         </Link>)
     ));
 
+    const router = useRouter();
+
     const wallet = useWallet();
     const {publicKey}= useWallet();
     const {connection} = useConnection()
@@ -34,7 +39,21 @@ const Teams = ({pda}) => {
     const [poolDetail, setPoolDetail] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isEdit, setIsEdit] = useState(false);
+    const [blink, setBlink] = useState(`https://betlify.fun/play?id=${pda}`);
+    const [isCopied, setIsCopied] = useState(false);
     const [onChain, setOnChain] = useState(null);
+
+    const copy2Clipborad = async()=>{
+        try{
+            console.log("inside copy to clipboard try");
+            await navigator.clipboard.writeText(blink);
+            console.log("copied to navigator");
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 3000);
+        }catch(e){
+            alert("failed to copy text due to ",e)
+        }
+    }
 
     const submitResult = async()=>{
         console.log("begin set result");
@@ -46,11 +65,23 @@ const Teams = ({pda}) => {
         console.log("result set success...");
     }
 
+    const deleteEntry = async()=>{
+        console.log("starting delete");
+        const data = new FormData;
+        data.append("pda",pda);
+
+        const response = await deletePool(data);
+        alert(response.message);
+        router.push("/dashboard");
+    }
+
     const getPoolOnchain = async()=>{
         console.log("fetching onChain results");
         if(!publicKey) alert("please connect your wallet first");
         const response = await onchainPoolDetails(connection, wallet, poolDetail.pda);
         console.log("onChain pool result is : ",JSON.parse(response));
+        console.log("No of true is : ", (JSON.parse(response).noOfTrue).toNumber());
+        console.log("No of false is : ", (JSON.parse(response).noOfFlase).toNumber());
         setOnChain(JSON.parse(response));
     }
 
@@ -82,6 +113,7 @@ const Teams = ({pda}) => {
                         <Button>Cancel Pool</Button>
                         <Button>Set End Date</Button>
                         <Button>Close Pool</Button>
+                        <Button onClick={deleteEntry}>Delete Pool</Button>
                         <Button onClick={getPoolOnchain}>Get Onchain Pool Details</Button>
                     </div>
                     <div style={{display:'grid', placeContent:'center', position:'sticky', bottom:'0'}}>
@@ -125,10 +157,20 @@ const Teams = ({pda}) => {
                                     <td className="align-middle">Result</td>
                                     <td className="align-middle">{poolDetail.result}</td>
                                 </tr>
+                                <tr>
+                                    <td className="align-middle">Result Source Url</td>
+                                    <td className="align-middle">{poolDetail.resultUrl}</td>
+                                </tr>
+                                <tr>
+                                    <td className="align-middle">BLink</td>
+                                    <td className="align-middle">
+                                        {blink.substring(0,30)}... {isCopied ? <Clipboard2Check size={20} color="green" /> : <Clipboard onClick={copy2Clipborad} size={20} color="black" />}
+                                    </td>
+                                </tr>
                             </tbody>
                         </Table>
                         <div style={{display:'grid', placeContent:'center'}}>
-                            <Button style={{backgroundColor:'#642BFF', color:'white', margin:'1rem'}} onClick={()=>setIsEdit(true)}>Edit</Button>
+                            <Button style={{backgroundColor:'black',border:'none', color:'white', margin:'1rem'}} onClick={()=>setIsEdit(true)}>Edit</Button>
                         </div>
                     </section>
                 )

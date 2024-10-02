@@ -27,7 +27,8 @@ const Play = () => {
     const [pda, setPda] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [betAmount, setBetAmount] = useState("");
-    const [onChainDetails, setOnchainDetails] = useState(null);
+    const [onChainDetails, setOnchainDetails] = useState({yes:0.5, no:0.5});
+    const [isExecuting, setIsExecuting] = useState(false);
 
     const wallet = useWallet();
     const {publicKey} = useWallet();
@@ -46,7 +47,17 @@ const Play = () => {
             console.log("the pda is: ",(JSON.parse(result)).pda);
 
             const onchain = await onchainPoolDetails(connection, wallet, _pda);
-            setOnchainDetails(JSON.parse(onchain));
+            const resultOnchain = JSON.parse(onchain);
+            const noOfTrue = BigInt(`0x${resultOnchain.noOfTrue}`);
+            const noOfFalse = BigInt(`0x${resultOnchain.noOfFalse}`);
+            console.log("number of true is on chain: ",noOfTrue);
+            const total = noOfTrue + noOfFalse;
+            const yesOdds = Number(BigInt(10000) * noOfTrue / total) / 10000;
+            const noOdds = Number(BigInt(10000) * noOfFalse / total) / 10000;
+
+            console.log("number of true odd is on chain: ",yesOdds);
+
+            setOnchainDetails({yes:yesOdds, no:noOdds});
 
             setPoolDetails(JSON.parse(result));
             setPda((JSON.parse(result)).pda);
@@ -59,16 +70,26 @@ const Play = () => {
     const Bet = async(option:number)=>{
         if (!publicKey) {
             alert("Please connect your wallet first");
-            // return;
+            return;
         }
+
+        if(betAmount=="") {
+            alert("Invalid Amount");
+            return
+        }
+
+        setIsExecuting(true);
 
         try{
             console.log("calling place bet");
             const result = await PlaceBet(connection, wallet, poolDetails.poolTitle, poolDetails.manager, poolDetails.pda, parseFloat(betAmount)*LAMPORTS_PER_SOL, option);
             if (result.success){
                 alert(result.message);
+                setIsExecuting(false);
+                setBetAmount("");
             }else{
                 alert(result.message);
+                setIsExecuting(false);
             }
         }catch(e){
             console.log("failed");
@@ -84,10 +105,13 @@ const Play = () => {
             alert("result not set... please check back later");
             return;
         };
-        console.log("Starting claim...")
+        console.log("Starting claim...");
+
+        setIsExecuting(true);
 
         const response = await claimWinnings(connection, wallet, poolDetails.poolTitle, poolDetails.manager, poolDetails.pda);
         console.log(response.message);
+        setIsExecuting(false);
     }
     const Sell = async(position:number)=>{
         if (!publicKey) {
@@ -98,10 +122,13 @@ const Play = () => {
             alert("Reverted... Event already started or Pool already locked");
             return;
         };
-        console.log("Starting sell...")
+        console.log("Starting sell...");
+
+        setIsExecuting(true);
 
         const response = await sellPosition(connection, wallet, poolDetails.poolTitle, poolDetails.manager, poolDetails.pda, position);
         console.log(response.message);
+        setIsExecuting(false);
     }
 
 
@@ -143,16 +170,24 @@ const Play = () => {
                     <div className='play__desc'>
                         <h5>{poolDetails.desc}</h5>
                     </div>
-                    <div>
-                        <label htmlFor='betAmount'>Buy Amount </label>
-                        <input type='number' className='play__betAmount' onChange={(e)=>setBetAmount(e.target.value)} value={betAmount} name='betAmount' placeholder={`Enter Buy Amount`} />
-                    </div>
-                    <div className='play__options'>
-                        <Button style={{backgroundColor:'black', border:'none'}} onClick={()=>Bet(1)}>Buy {poolDetails.option1} Shares </Button>
-                        <Button style={{backgroundColor:'black', border:'none'}} onClick={()=>Bet(2)}>Buy {poolDetails.option2} Shares </Button>
-                        <Button style={{backgroundColor:'black', border:'none'}} onClick={()=>Sell(1)}> Sell All {poolDetails.option1} Shares </Button>
-                        <Button style={{backgroundColor:'black', border:'none'}} onClick={()=>Sell(2)}>Sell All {poolDetails.option2} Shares </Button>
-                </div>
+                    {isExecuting ? (
+                        <Button style={{display:'block', width:'100%', backgroundColor:'black', border:'none'}}>Executing...</Button>
+                    ) : (
+                        <div>
+                            <div>
+                                <label htmlFor='betAmount'>Buy Amount </label>
+                                <input type='number' className='play__betAmount' onChange={(e)=>setBetAmount(e.target.value)} value={betAmount} name='betAmount' placeholder={`Enter Buy Amount`} />
+                            </div>
+                            <div className='verify__button' style={{marginBottom:'0.5rem'}}>
+                                <Button className='vb' style={{backgroundColor:'black', border:'none'}} onClick={()=>Bet(1)}>Buy {poolDetails.option1} ( ${onChainDetails.yes} ) </Button>
+                                <Button className='vb' style={{backgroundColor:'black', border:'none'}} onClick={()=>Bet(2)}>Buy {poolDetails.option2} ( ${onChainDetails.no} )</Button>
+                            </div>
+                            <div className='verify__button'>
+                                <Button className='vb' style={{backgroundColor:'black', border:'none'}} onClick={()=>Sell(1)}> Sell All {poolDetails.option1} Share </Button>
+                                <Button className='vb' style={{backgroundColor:'black', border:'none'}} onClick={()=>Sell(2)}>Sell All {poolDetails.option2} Share </Button>
+                            </div>
+                        </div>
+                    )}
                 </section>
             )
         )

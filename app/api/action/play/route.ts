@@ -107,14 +107,12 @@ export const GET = async(req:Request)=>{
                             ]
                         },
                         {
-                            label: "Sell Position",
-                            href: `/api/action/play?id=${pda}&amount={amount}&sell=true`,
-                            parameters:[
-                                {
-                                    name: "amount",
-                                    label: "Enter Sell Amount"
-                                }
-                            ]
+                            label: `Sell ${option1}`,
+                            href: `/api/action/play?id=${pda}&amount={amount}&sell=1`
+                        },
+                        {
+                            label: `Sell ${option2}`,
+                            href: `/api/action/play?id=${pda}&amount={amount}&sell=2`
                         }
                     ]
                 }
@@ -195,7 +193,56 @@ export const POST = async(req:Request)=>{
             headers: ACTIONS_CORS_HEADERS
         });
     }else if (url.searchParams.has("sell")){
-        ///perform sell operation here...
+        if(url.searchParams.get("sell")=="1"){
+            const builtTx = await program.methods.sellPosition(title, manager, poolId, new anchor.BN(1))
+            .accounts({
+                pool: poolId,
+                userBet: userPDA,
+                poolTreasury: treasury,
+                bettor: userAccount,
+                SystemProgram: systemProgram
+            })
+            .transaction();
+            const {blockhash} = await connection.getLatestBlockhash();
+            builtTx.recentBlockhash = blockhash;
+            builtTx.feePayer = userAccount;
+
+            const payload : ActionPostResponse = await createPostResponse({
+                fields:{
+                    transaction: builtTx,
+                    message: "Winning Claimed Successfully"
+                }
+            });
+
+            return Response.json(payload, {
+                headers: ACTIONS_CORS_HEADERS
+            });
+        }else{
+            //sell false
+            const builtTx = await program.methods.sellPosition(title, manager, poolId, new anchor.BN(2))
+            .accounts({
+                pool: poolId,
+                userBet: userPDA,
+                poolTreasury: treasury,
+                bettor: userAccount,
+                SystemProgram: systemProgram
+            })
+            .transaction();
+            const {blockhash} = await connection.getLatestBlockhash();
+            builtTx.recentBlockhash = blockhash;
+            builtTx.feePayer = userAccount;
+
+            const payload : ActionPostResponse = await createPostResponse({
+                fields:{
+                    transaction: builtTx,
+                    message: "Winning Claimed Successfully"
+                }
+            });
+
+            return Response.json(payload, {
+                headers: ACTIONS_CORS_HEADERS
+            });
+        }
     }
     else{
         console.log("building placebet tx");

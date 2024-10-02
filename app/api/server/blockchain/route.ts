@@ -37,7 +37,7 @@ export const onchainPoolDetails = async(connection:any, wallet:any, _pda: string
     return JSON.stringify(poolData);
 }
 
-export const CreateTFPool = async(connection:any, wallet: any, title:string, desc:string, image:any, startTime:number, lockTime:number, endTime:number, minBetAmount:number, houseFee:number, option1:string, option2:string)=>{
+export const CreateTFPool = async(connection:any, wallet: any, title:string, desc:string, image:any, startTime:number, lockTime:number, endTime:number, minBetAmount:number, houseFee:number, option1:string, option2:string, resultUrl:string)=>{
     const program = getProvider(connection, wallet);
     console.log("program passed..");
     console.log("user wallet is: ", (wallet.publicKey).toBase58())
@@ -83,6 +83,7 @@ export const CreateTFPool = async(connection:any, wallet: any, title:string, des
             formData.append("houseFee", houseFee.toString());
             formData.append("option1", option1);
             formData.append("option2", option2);
+            formData.append("resultUrl", resultUrl);
             formData.append("image", image.base64);
             formData.append("type", image.type);
 
@@ -90,7 +91,7 @@ export const CreateTFPool = async(connection:any, wallet: any, title:string, des
 
             const dbEntry = await createPoolDb(formData);
 
-            return {success:true, message:"Pool Created Successfully."}
+            return {success:true, message:"Pool Created Successfully. Copy your Blinks in the next page", pda:pda}
         }catch(err){
             return{success:false, message:"Pool Creation failed. Please try again."}
         }
@@ -144,17 +145,18 @@ export const PlaceBet = async(connection: any, wallet: any, title: string, _mana
     }
 }
 
-export const setResult = async(connection : any, wallet: any, title:string)=>{
+export const setResult = async(connection : any, wallet: any, title:string, manager: string, option:number)=>{
     const program = getProvider(connection, wallet);
     const poolTitle = title;
-    const result : number = 1
+    const result = option;
+    const managerKey = new PublicKey(manager);
 
-    const [poolPDA] = PublicKey.findProgramAddressSync([Buffer.from(poolTitle), wallet.publicKey.toBuffer()],program.programId);
+    const [poolPDA] = PublicKey.findProgramAddressSync([Buffer.from(poolTitle), managerKey.toBuffer()], program.programId);
 
-    const signature = await program.methods.setTfResult(poolTitle, new anchor.BN(result))
+    const signature = await program.methods.setTfResult(poolTitle, managerKey, new anchor.BN(result))
     .accounts({
         pool: poolPDA,
-        manager: wallet.publicKey,
+        aggregator: wallet.publicKey,
         SystemProgram: anchor.web3.SystemProgram.programId
     })
     .rpc()

@@ -3,16 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import '../styles.css'
-import { Button } from "react-bootstrap";
-import avatar5 from 'public/images/avatar/avatar-5.jpg'
+import { Button, Modal, Spinner } from "react-bootstrap";
+import avatar5 from 'public/images/avatar/avatar-5.jpg';
+import mockup from "public/images/background/true-or-false.png";
 
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL, SystemProgram, Transaction } from "@solana/web3.js";
 import { useState } from "react";
 import { CreateTFPool } from "app/api/server/blockchain/route";
-import { createPoolDb } from "app/api/server/database/route";
 import { useRouter } from "next/navigation";
-
+import {CheckCircleFill, XCircleFill, CodeSlash} from "react-bootstrap-icons";
 
 
 const TrueOrFalse = () => {
@@ -63,17 +63,19 @@ const TrueOrFalse = () => {
         }
         else{
             setDisable(true);
+            setIsModal(true);
             try{
-                const response = await CreateTFPool(connection, wallet, title, desc, imageBase64, startTime, lockTime, endTime, (minBetAmount*LAMPORTS_PER_SOL), houseFee, option1, option2);
-                if(response.success){
-                    alert(response.message);
-                    router.push("/dashboard"); 
+                const _response = await CreateTFPool(connection, wallet, title, desc, imageBase64, startTime, lockTime, endTime, (minBetAmount*LAMPORTS_PER_SOL), houseFee, option1, option2, resultUrl);
+                if(_response.success){
+                    setResponse({ success: 1, message: _response.message, pda:_response.pda });
+                    // router.push("/dashboard"); 
                 }else{
-                    alert(response.message)
-                    setDisable(false);
+                    setResponse({ success: 2, message: _response.message });
+                    // setIsModal(false);
+                    // setDisable(false);
                 }
             }catch(e){
-                alert("Failed to send create pool.");
+                console.log("Failed to send create pool.");
             }
         }
     };
@@ -83,24 +85,27 @@ const TrueOrFalse = () => {
     const [imageBase64, setImageBase64] = useState(null);
     const [title, setTitle] = useState("");
     const [desc, setDesc] = useState("");
-    const [startTime, setStartTime] = useState(null);
-    const [lockTime, setLockTime] = useState(null);
-    const [endTime, setEndTime] = useState(null);
+    const [startTime, setStartTime] = useState(0);
+    const [lockTime, setLockTime] = useState(0);
+    const [endTime, setEndTime] = useState(0);
     const [minBetAmount, setMinBetAmount] = useState(null);
     const [houseFee, setHouseFee] = useState(null);
     const [option1, setOption1] = useState("");
     const [option2, setOption2] = useState("");
+    const [resultUrl, setResultUrl] = useState("");
+    const [isModal, setIsModal] = useState(false);
+    const [response, setResponse] = useState({success:0, message:"Creating Pool...", pda:"somepda"});
     
     const [disable, setDisable]= useState(false);
 
   return (
     <main className="create__main">
         <div className="create__title">
-            <h2>Create A YES or NO Bet Pool </h2>
+            <h2>Create A TRUE or FALSE Bet Pool </h2>
         </div>
         <section className="create__section">
             <section className="create__form">
-                <form className="create__form" action={createPoolDb}>
+                <form className="create__form" onSubmit={createPoolButton}>
                     <div className="create__date">
                         <label htmlFor="poolName">
                             <input type="text" name="poolName" onChange={(e)=>setTitle(e.target.value)} value={title} placeholder="Pool Name" disabled={disable} required/>
@@ -115,16 +120,19 @@ const TrueOrFalse = () => {
                     <div className="create__date">
                         <div>
                             <label htmlFor="startDate">
+                                Start Time :
                                 <input type="datetime-local" name="startDate" onChange={startTimestamp} disabled={disable} required/>
                             </label>
                         </div>
                         <div>
                             <label htmlFor="lockDate">
+                                Lock Time :
                                 <input type="datetime-local" name="lockDate" onChange={lockTimestamp} disabled={disable} required/>
                             </label>
                         </div>
                         <div>
                             <label htmlFor="endDate">
+                                End Time :
                                 <input type="datetime-local" name="endDate" onChange={endTimestamp} disabled={disable} required/>
                             </label>
                         </div>
@@ -145,24 +153,43 @@ const TrueOrFalse = () => {
                             <input type="number" name="houseFee" onChange={(e)=>setHouseFee(e.target.value)} value={houseFee} placeholder="House Fee in % (max 6%)" disabled={disable} required/>
                         </label>
                     </div>
-                    <Button style={{display:'block', width:'100%'}} onClick={(e)=>createPoolButton(e)} name="Create">Create Pool</Button>
+                    <div>
+                        <input type="text" placeholder="result source url" onChange={(e)=>setResultUrl(e.target.value)} value={resultUrl} required/>
+                    </div>
+                    <div>
+                        <Button style={{display:'block', width:'100%', backgroundColor:'black', border:'none'}} type="submit" name="Create">Create Pool</Button>
+                    </div>
                 </form>
             </section>
             <section className="">
                 <h2>#Preview</h2>
                 <div className="create__preview">
-                    <Image className="create__card__img" src={preview ? preview : avatar5} width={500} height={281} alt="pool image"/>
+                    <Image className="create__card__img" src={preview ? preview : mockup} width={500} height={281} alt="pool image"/>
                     <div className="text__preview">
                         <h2>{title}</h2>
                         <p>{desc}</p>
                         <input className="betAmount" type="text" placeholder="Enter Bet Amount" disabled/>
-                        <Button style={{marginBottom:'0.7rem'}} className="options__prev">Bet on {option1}</Button>
-                        <Button className="options__prev">Bet on {option2}</Button>
+                        <Button style={{marginBottom:'0.7rem', backgroundColor:'black', border:'none'}} className="options__prev">Bet on {option1}</Button>
+                        <Button style={{backgroundColor:'black', border:'none'}} className="options__prev">Bet on {option2}</Button>
                     </div>
                     {/* <Button className="submit__button">Place Bet</Button> */}
                 </div>
             </section>
         </section>
+        <Modal show={isModal} onHide={()=> {setIsModal(false); setResponse({success:0, message:"Creating Pool..."})}} centered>
+            <Modal.Body className="text-center">
+                <h3 className="text-center">{response.success == 0 ? (<CodeSlash color="#0275d8" size={50} />) : response.success ==1 ? (<CheckCircleFill color="green" size={50}/>) : (<XCircleFill color="red" size={50}/>)}</h3>
+                <Spinner animation="border" role="status" style={{display : response.success !== 0 ? 'none' : ''}}>
+                <span className="visually-hidden">Loading...</span>
+                </Spinner>
+                <h3 className="mt-2">{response.message}</h3>
+                {response.success !== 0 ? (
+                    <Button style={{backgroundColor:'black', border:'none'}} onClick={response.success == 1 ? ()=> router.push(`/pool/${response.pda}`) : ()=>{setIsModal(false);setResponse({success:0, message:"Creating Pool..."})}}>Ok</Button>
+                ) : (
+                    <div></div>
+                )}
+            </Modal.Body>
+        </Modal>
     </main>
   )
 }

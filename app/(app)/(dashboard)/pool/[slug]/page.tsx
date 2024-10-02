@@ -22,7 +22,7 @@ const PoolDetails = ({params} : {params : {slug : String}}) => {
 
                     </Col>
                     <Col xl={8} lg={6} md={12} xs={12} style={{marginLeft:'0'}}>
-                        <Teams pda={params.slug} />
+                        <Teams pda={params.slug}  />
                     </Col>
                 </Row>
             </Container>

@@ -20,7 +20,8 @@ const PoolSchema =new mongoose.Schema({
     houseFee: String,
     option1: String,
     option2: String,
-    result: String
+    result: String,
+    resultUrl: String
 });
 
 const Pool = mongoose.models.Pools || mongoose.model("Pools", PoolSchema);
@@ -44,6 +45,7 @@ export async function createPoolDb(formData : FormData){
     const houseFee = formData.get("houseFee");
     const option1 = formData.get("option1");
     const option2 = formData.get("option2");
+    const resultUrl = formData.get("resultUrl");
     const mimeType = formData.get("type");
     console.log("image type is: ", mimeType);
     const image = formData.get("image");
@@ -65,7 +67,7 @@ export async function createPoolDb(formData : FormData){
         //After uploading image to cloudinary, add collection to mongodb database
         try{
             const createPool = new Pool({
-                user, pda, manager, poolTitle, desc, uploadUrl, startTime, lockTime, endTime, minBetAmount, houseFee, option1, option2,result:"0"
+                user, pda, manager, poolTitle, desc, uploadUrl, startTime, lockTime, endTime, minBetAmount, houseFee, option1, option2,result:"0", resultUrl
             });
 
             await createPool.save();
@@ -102,6 +104,18 @@ export async function getPoolDetails(formData : FormData){
 
     return JSON.stringify(poolDetail);
 }
+export async function deletePool(formData : FormData){
+    console.log("proceeding to delete pool...");
+    const pda = formData.get("pda");
+    console.log("the pda is: ",pda);
+    await connectDb();
+
+    const poolDetail = await Pool.deleteOne({pda: pda});
+
+    console.log("Pool deleted sucessfully");
+
+    return {success: true, message:"deleted successfully"};
+}
 
 export async function getManagerPools(formData : FormData){
     console.log("proceeding to get manager pools...");
@@ -112,6 +126,22 @@ export async function getManagerPools(formData : FormData){
     const managerPools = await Pool.find({user: user});
     if (managerPools.length > 0){
         console.log("manager pools fetched", managerPools);
+
+        return JSON.stringify(managerPools);
+    }else{
+        return null;
+    }
+    
+}
+export async function getAllPools(){
+    console.log("proceeding to get all pools...");
+
+    await connectDb();
+    console.log("Pool initialized...");
+
+    const managerPools = await Pool.find({});
+    if (managerPools.length > 0){
+        console.log("allpools fetched with length: ", managerPools.length);
 
         return JSON.stringify(managerPools);
     }else{

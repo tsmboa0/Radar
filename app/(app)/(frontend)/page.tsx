@@ -8,6 +8,7 @@ import meme from "public/images/background/meme.png";
 import cod from "public/images/background/cod.png";
 import sol from "public/images/background/sol.jpg";
 import array from "public/images/background/crypto-in-twitter-sm.png";
+import Link from "next/link";
 
 const Landing = () => {
   return (
@@ -23,7 +24,7 @@ const Landing = () => {
         <div className="section1__text">
           <h1 className="section1__h1">Turn Your Engagements Into Real Money</h1>
           <p className="section1__p">With Betlify, you no longer have to wait for X ad revenue to make money.</p>
-          <button className="section1__button">Try It Now</button>
+            <Link href='/sign-in' style={{padding:'0.8rem'}} className="section1__button">Try It Now</Link>
         </div>
         <div className="section1__image__div">
           <Image src={cod} width={500} alt="section1 image" className="section1__image" />
@@ -39,6 +40,16 @@ const Landing = () => {
           <Image src={cod} className="array__image" alt="array of events"/>
           <Image src={anime} className="array__image" alt="array of events"/>
           <Image src={sol} className="array__image" alt="array of events"/>
+        </div>
+      </section>
+      <section className="main__section1">
+        <div className="section1__text">
+          <h1 className="section1__h1">Earn More With Our Stake-2-Validate Program</h1>
+          <p className="section1__p">Earn  fraction of our platform fees by verifying results accurately</p>
+          <Link href='/validate' style={{padding:'0.8rem'}} className="section1__button">Verify Now</Link>
+        </div>
+        <div className="section1__image__div">
+          <Image src={cod} width={500} alt="section1 image" className="section1__image" />
         </div>
       </section>
     </main>

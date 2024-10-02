@@ -12,10 +12,12 @@ export default function FronEndLayout({ children }){
         <div className="root__landing">
             <nav>
                 <div>
-                    <Image src={betlify} alt="betlify_logo" width={150} height={50} className="nav-logo" />
+                    <Link href="/">
+                        <Image src={betlify} alt="betlify_logo" width={150} height={50} className="nav-logo" />
+                    </Link>
                 </div>
                 <section className="nav__links">
-                    <button className="nav__button no-small">Get Started</button>
+                    <Link href="/sign-in" className="nav__button no-small">Get Started</Link>
                     <ConnectWalletButton />
                 </section>
             </nav>
