@@ -61,8 +61,8 @@ const Home = () => {
                         pools.length > 0 ? (
                             pools.map((item, index) => {
                                 return (
-                                    <Col xl={3} lg={4} md={6} sm={6} xs={12} className="mt-6">
-                                        <Card style={{ width: '15rem' }} key={index}>
+                                    <Col xl={3} lg={4} md={6} sm={6} xs={12} className="mt-6" key={index}>
+                                        <Card style={{ width: '15rem' }}>
                                             <Image variant="top" src={item.uploadUrl} width={100} height={100} style={{ width: '15rem', height:'auto' }} alt="Pool Image"/>
                                             <Card.Body>
                                                 <h6 style={{margin: '0', fontWeight:'bold', color:'black'}}>{item.poolTitle}</h6>
