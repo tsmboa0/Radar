@@ -17,7 +17,7 @@ export default function FronEndLayout({ children }){
                     </Link>
                 </div>
                 <section className="nav__links">
-                    <Link href="/sign-in" className="nav__button no-small">Get Started</Link>
+                    <Link href="/dashboard" className="nav__button no-small">Get Started</Link>
                     <ConnectWalletButton />
                 </section>
             </nav>

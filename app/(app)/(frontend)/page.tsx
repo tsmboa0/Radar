@@ -24,7 +24,7 @@ const Landing = () => {
         <div className="section1__text">
           <h1 className="section1__h1">Turn Your Engagements Into Real Money</h1>
           <p className="section1__p">With Betlify, you no longer have to wait for X ad revenue to make money.</p>
-            <Link href='/sign-in' style={{padding:'0.8rem'}} className="section1__button">Try It Now</Link>
+            <Link href='/dashboard' style={{padding:'0.8rem'}} className="section1__button">Try It Now</Link>
         </div>
         <div className="section1__image__div">
           <Image src={cod} width={500} alt="section1 image" className="section1__image" />

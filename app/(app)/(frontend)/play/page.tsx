@@ -183,8 +183,8 @@ const Play = () => {
                                 <Button className='vb' style={{backgroundColor:'black', border:'none'}} onClick={()=>Bet(2)}>Buy {poolDetails.option2} ( ${onChainDetails.no} )</Button>
                             </div>
                             <div className='verify__button'>
-                                <Button className='vb' style={{backgroundColor:'black', border:'none'}} onClick={()=>Sell(1)}> Sell All {poolDetails.option1} Share </Button>
-                                <Button className='vb' style={{backgroundColor:'black', border:'none'}} onClick={()=>Sell(2)}>Sell All {poolDetails.option2} Share </Button>
+                                <Button className='vb' style={{backgroundColor:'black', border:'none'}} onClick={()=>Sell(1)}> Sell All {poolDetails.option1}</Button>
+                                <Button className='vb' style={{backgroundColor:'black', border:'none'}} onClick={()=>Sell(2)}>Sell All {poolDetails.option2}</Button>
                             </div>
                         </div>
                     )}
