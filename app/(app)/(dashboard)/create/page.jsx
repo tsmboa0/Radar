@@ -12,6 +12,8 @@ import {
 	Container
 } from 'react-bootstrap';
 import mockup from "public/images/background/true-or-false.png";
+import voteOnBet from "public/images/background/betonvote.png";
+import one2many from "public/images/background/onetomany.jpg";
 
 import { useRouter } from "next/navigation";
 
@@ -47,23 +49,23 @@ const CreatePool = () => {
                             </Card.Body>
                         </Card>
                         <Card style={{ width: '15rem' }}>
-                            <Image variant="top" src={mockup} style={{ width: '15rem', height:'auto' }} />
+                            <Image variant="top" src={one2many} style={{ width: '15rem', height:'auto' }} />
                             <Card.Body>
                                 <Card.Title style={{margin: '0', fontWeight:'bold', color:'black'}}>ONE to MANY</Card.Title>
                                 <Card.Text style={{fontSize:'12px'}}>
-                                    suitable for markets with two options. either true or false.
+                                    suitable for markets with multiple options and only one is correct.
                                 </Card.Text>
-                                <Button onClick={()=>router.push('/create/true-or-false')} variant="primary" style={{backgroundColor:'black', border:'none'}}>Use Template</Button>
+                                <Button variant="primary" style={{backgroundColor:'black', border:'none'}}>Use Template</Button>
                             </Card.Body>
                         </Card>
                         <Card style={{ width: '15rem' }}>
-                            <Image variant="top" src={mockup} style={{ width: '15rem', height:'auto' }} />
+                            <Image variant="top" src={voteOnBet} style={{ width: '15rem', height:'auto' }} />
                             <Card.Body>
                                 <Card.Title style={{margin: '0', fontWeight:'bold', color:'black'}}>BET on VOTE</Card.Title>
                                 <Card.Text style={{fontSize:'12px'}}>
-                                    suitable for markets with two options. either true or false.
+                                    suitable for markets with no specfic result. All bet placed in BET on VOTE are considered a vote. The side with the highest vote wins
                                 </Card.Text>
-                                <Button onClick={()=>router.push('/create/true-or-false')} variant="primary" style={{backgroundColor:'black', border:'none'}}>Use Template</Button>
+                                <Button variant="primary" style={{backgroundColor:'black', border:'none'}}>Use Template</Button>
                             </Card.Body>
                         </Card>
                     </Col>
