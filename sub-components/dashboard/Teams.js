@@ -39,7 +39,7 @@ const Teams = ({pda}) => {
     const [poolDetail, setPoolDetail] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isEdit, setIsEdit] = useState(false);
-    const [blink, setBlink] = useState(`https://betlify.fun/play?id=${pda}`);
+    const [blink, setBlink] = useState(`https://www.betlify.fun/play?id=${pda}`);
     const [isCopied, setIsCopied] = useState(false);
     const [onChain, setOnChain] = useState(null);
 

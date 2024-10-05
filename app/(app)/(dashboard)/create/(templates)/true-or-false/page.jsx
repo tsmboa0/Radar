@@ -176,7 +176,7 @@ const TrueOrFalse = () => {
                 </div>
             </section>
         </section>
-        <Modal show={isModal} onHide={()=> {setIsModal(false); setResponse({success:0, message:"Creating Pool..."})}} centered>
+        <Modal show={isModal} onHide={()=> {setIsModal(false); setResponse({success:0, message:"Creating Pool..."});setDisable(false)}} centered>
             <Modal.Body className="text-center">
                 <h3 className="text-center">{response.success == 0 ? (<CodeSlash color="#0275d8" size={50} />) : response.success ==1 ? (<CheckCircleFill color="green" size={50}/>) : (<XCircleFill color="red" size={50}/>)}</h3>
                 <Spinner animation="border" role="status" style={{display : response.success !== 0 ? 'none' : ''}}>
@@ -184,7 +184,7 @@ const TrueOrFalse = () => {
                 </Spinner>
                 <h3 className="mt-2">{response.message}</h3>
                 {response.success !== 0 ? (
-                    <Button style={{backgroundColor:'black', border:'none'}} onClick={response.success == 1 ? ()=> router.push(`/pool/${response.pda}`) : ()=>{setIsModal(false);setResponse({success:0, message:"Creating Pool..."})}}>Ok</Button>
+                    <Button style={{backgroundColor:'black', border:'none'}} onClick={response.success == 1 ? ()=> router.push(`/pool/${response.pda}`) : ()=>{setIsModal(false);setResponse({success:0, message:"Creating Pool..."});setDisable(false)}}>Ok</Button>
                 ) : (
                     <div></div>
                 )}

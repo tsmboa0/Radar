@@ -178,9 +178,9 @@ const Play = () => {
                                 <label htmlFor='betAmount'>Buy Amount </label>
                                 <input type='number' className='play__betAmount' onChange={(e)=>setBetAmount(e.target.value)} value={betAmount} name='betAmount' placeholder={`Enter Buy Amount`} />
                             </div>
-                            <div className='verify__button' style={{marginBottom:'0.5rem'}}>
-                                <Button className='vb' style={{backgroundColor:'black', border:'none'}} onClick={()=>Bet(1)}>Buy {poolDetails.option1} ( ${onChainDetails.yes} ) </Button>
-                                <Button className='vb' style={{backgroundColor:'black', border:'none'}} onClick={()=>Bet(2)}>Buy {poolDetails.option2} ( ${onChainDetails.no} )</Button>
+                            <div className='play__options' style={{marginBottom:'0.5rem'}}>
+                                <Button className='' style={{backgroundColor:'black', border:'none'}} onClick={()=>Bet(1)}>Buy {poolDetails.option1} ( ${onChainDetails.yes} ) </Button>
+                                <Button className='' style={{backgroundColor:'black', border:'none'}} onClick={()=>Bet(2)}>Buy {poolDetails.option2} ( ${onChainDetails.no} )</Button>
                             </div>
                             <div className='verify__button'>
                                 <Button className='vb' style={{backgroundColor:'black', border:'none'}} onClick={()=>Sell(1)}> Sell All {poolDetails.option1}</Button>

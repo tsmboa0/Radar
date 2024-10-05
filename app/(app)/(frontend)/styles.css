@@ -73,7 +73,7 @@ nav{
     font-size: 1.6vw;
 }
 .hero__image{
-    width: 60%;
+    width: 70%;
     height: auto;
 }
 .main__section1{
@@ -178,7 +178,7 @@ nav{
 .play__options{
     display: flex;
     flex-flow: column wrap;
-    row-gap: 1rem;
+    row-gap: 0.5rem;
     margin-top: 1rem;
 }
 .sell__position{

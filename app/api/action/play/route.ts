@@ -235,7 +235,7 @@ export const POST = async(req:Request)=>{
             const payload : ActionPostResponse = await createPostResponse({
                 fields:{
                     transaction: builtTx,
-                    message: "Winning Claimed Successfully"
+                    message: "Position Sold Successfully"
                 }
             });
 

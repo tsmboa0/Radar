@@ -12,7 +12,7 @@ import {
 } from 'react-bootstrap';
 import Accordion from 'react-bootstrap/Accordion';
 import Image from 'next/image';
-import betlify from "../../public/images/brand/logotrans.png";
+import betlify from "../../public/images/brand/logowhitetrans.png";
 
 // import simple bar scrolling used for notification item scrolling
 import SimpleBar from 'simplebar-react';
@@ -31,7 +31,7 @@ const NavbarVertical = (props) => {
 			<section style={{ maxHeight: '100vh'}}>
 				<div className="nav-scroller">
 					<Link href="/dashboard" className="navbar-brand navbar-nav nav-link active">
-						<Image src={betlify} width={150} height={50} style={{}} alt="betlify logo" />
+						<Image src={betlify} width={200} height={54} style={{}} alt="betlify logo" />
 					</Link>
 				</div>				
 				{/* Dashboard Menu */}

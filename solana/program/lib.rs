@@ -2,6 +2,7 @@ use anchor_lang::prelude::*;
 // use anchor_spl::token::{self, Mint, MintTo, mint_to, TokenAccount, Token};
 // use anchor_spl::associated_token::AssociatedToken;
 // use solana_program::native_token::LAMPORTS_PER_SOL;
+// use std::str::FromStr;
 use solana_program::program::invoke;
 use solana_program::system_instruction::transfer;
 // This is your program's public key and it will update
@@ -52,6 +53,9 @@ mod bet_house {
         pool.min_bet_amount = min_bet_amount;
         pool.result = 0;
         pool.is_result_set = false;
+        pool.no_of_true = 100000000;
+        pool.no_of_false = 100000000;
+        pool.pool_amount = 200000000;
 
         msg!("True or False Pool Created");
 
@@ -89,18 +93,20 @@ mod bet_house {
         )?;
 
         user_bet.authority = ctx.accounts.bettor.key();
-
         pool.pool_amount += amount;
+        
         if option == 1 {
+            let shares = pool.pool_amount.checked_mul(amount).unwrap().checked_div(pool.no_of_true).unwrap();
             user_bet.true_amount += amount;
+            user_bet.true_shares += shares;
             user_bet.bet_true = true;
             pool.no_of_true += amount;
-            pool.pool_amount += amount;
         } else {
+            let shares = pool.pool_amount.checked_mul(amount).unwrap().checked_div(pool.no_of_false).unwrap();
             user_bet.false_amount += amount;
+            user_bet.false_shares += shares;
             user_bet.bet_false = true;
             pool.no_of_false += amount;
-            pool.pool_amount += amount;
         }
 
         msg!("Bet placed successfully...");
@@ -138,15 +144,16 @@ mod bet_house {
         Ok(())
     }
 
-    pub fn set_tf_result(ctx: Context<SetTFResult>, _title: String, result: u8) -> Result<()> {
+    pub fn set_tf_result(ctx: Context<SetTFResult>, _title:String, _manager:Pubkey, result: u8) -> Result<()> {
          
         let pool: &mut Account<TrueOrFalsePool> = &mut ctx.accounts.pool;
+        // let result_aggregator = Pubkey::from_str(AGGREGATOR).unwrap();
         //requiire that the result is either 1 or 2
         require!(result == 1 || result == 2, CustomErrors::InvalidResult);
-        require!(
-            pool.authority == ctx.accounts.manager.key(),
-            CustomErrors::UnAuthorized
-        );
+        // require!(
+        //     result_aggregator == ctx.accounts.aggregator.key(),
+        //     CustomErrors::UnAuthorized
+        // );
 
         pool.result = result;
         pool.is_result_set = true;
@@ -166,7 +173,7 @@ mod bet_house {
             CustomErrors::UnAuthorized
         );
         require!(
-            (user_bet.bet_false || user_bet.bet_true) && pool.end_time < clock.unix_timestamp,
+            ((user_bet.bet_false || user_bet.bet_true) && pool.end_time < clock.unix_timestamp) && pool.is_result_set,
             CustomErrors::BetNotFound
         );
 
@@ -228,33 +235,47 @@ mod bet_house {
         require!(clock.unix_timestamp < pool.lock_time, CustomErrors::PoolLocked);
         require!(user_bet.authority == bettor.key(), CustomErrors::UnAuthorized);
 
-        if position == 1 && user_bet.bet_true {
-            let payout = pool.pool_amount.checked_mul(user_bet.true_amount).unwrap().checked_div(pool.no_of_true).unwrap();
+        if position == 1 {
+            require!(user_bet.bet_true, CustomErrors::NoShares);
+            let new_total = pool.pool_amount - user_bet.true_amount;
+            let new_true = pool.no_of_true - user_bet.true_amount;
+            let payout = new_true.checked_mul(user_bet.true_shares).unwrap().checked_div(new_total).unwrap();
+
             **pool_treasury.try_borrow_mut_lamports()? -= payout;
             **bettor.try_borrow_mut_lamports()? += payout;
 
             user_bet.true_amount = 0;
             user_bet.bet_true = false;
+            user_bet.true_shares = 0;
             pool.pool_amount -= user_bet.true_amount;
             pool.no_of_true -= user_bet.true_amount;
 
-            msg!("Position sold successfully...")
-        }else if position == 2 && user_bet.bet_false {
-            let payout = pool.pool_amount.checked_mul(user_bet.false_amount).unwrap().checked_div(pool.no_of_false).unwrap();
+            msg!("Position sold successfully...");
+            Ok(()) 
+        }else if position == 2 {
+            require!(user_bet.bet_false, CustomErrors::NoShares);
+
+            let new_total = pool.pool_amount - user_bet.false_amount;
+            let new_false = pool.no_of_true - user_bet.false_amount;
+            let payout = new_false.checked_mul(user_bet.false_shares).unwrap().checked_div(new_total).unwrap();
+            
             **pool_treasury.try_borrow_mut_lamports()? -= payout;
             **bettor.try_borrow_mut_lamports()? += payout;
 
             user_bet.false_amount = 0;
             user_bet.bet_false = false;
+            user_bet.false_shares = 0;
             pool.pool_amount -= user_bet.false_amount;
             pool.no_of_false -= user_bet.false_amount;
 
-            msg!("Position sold successfully...")
+            msg!("Position sold successfully...");
+            Ok(())
         }else{
-            msg!("You have not bet on any position.")
+            msg!("You have not bet on any position.");
+            Ok(())
         }
 
-        Ok(())
+        
     }
 
     pub fn admin_claim_tf(ctx: Context<AdminClaimTF>, _title: String, _pool_id:Pubkey) -> Result<()> {
@@ -335,12 +356,12 @@ pub struct EditTFEndTime<'info> {
     pub system_program: Program<'info, System>,
 }
 #[derive(Accounts)]
-#[instruction(title : String)]
+#[instruction(title : String, manager:Pubkey,)]
 pub struct SetTFResult<'info> {
-    #[account(mut, seeds=[title.as_bytes(), manager.key().as_ref()], bump)]
+    #[account(mut, seeds=[title.as_bytes(), manager.as_ref()], bump)]
     pub pool: Account<'info, TrueOrFalsePool>,
     #[account(mut)]
-    pub manager: Signer<'info>,
+    pub aggregator: Signer<'info>,
     pub system_program: Program<'info, System>,
 }
 
@@ -421,7 +442,9 @@ enum CustomErrors {
     #[msg("Invalid Result Provided. Must be either 1 or 2")]
     InvalidResult,
     #[msg("Request Rejected, Pool Has Been Locked")]
-    PoolLocked
+    PoolLocked,
+    #[msg("You dont have a share for this option")]
+    NoShares
 }
 
 #[account]
@@ -455,6 +478,8 @@ pub struct BetTF {
     pub false_amount: u64,
     pub bet_true: bool,
     pub bet_false: bool,
+    pub true_shares: u64,
+    pub false_shares: u64
 }
 
 #[account]
@@ -463,3 +488,5 @@ pub struct BetHouse{
     pub authority: Pubkey,
     pub treasury: Pubkey,
 }
+
+// const AGGREGATOR: &str = "9nDqF4FPokbje1bJwEpgYSLtrvWTePBWGcY8YsMWz1pP";

@@ -35,11 +35,31 @@ const CreatePool = () => {
                             <p style={{marginTop:'0.8rem'}}>Choose a pool template that best suite your event from the lists of templates below. You can also request for a new tmeplate to be added in the future.</p>
                         </div>
                     </Col>
-                    <Col xl={3} lg={4} md={6} sm={6} xs={12} className="mt-6"> 
+                    <Col style={{display:'flex',flexFlow:'row wrap',gap:'1rem'}} > 
                         <Card style={{ width: '15rem' }}>
                             <Image variant="top" src={mockup} style={{ width: '15rem', height:'auto' }} />
                             <Card.Body>
                                 <Card.Title style={{margin: '0', fontWeight:'bold', color:'black'}}>TRUE or FALSE</Card.Title>
+                                <Card.Text style={{fontSize:'12px'}}>
+                                    suitable for markets with two options. either true or false.
+                                </Card.Text>
+                                <Button onClick={()=>router.push('/create/true-or-false')} variant="primary" style={{backgroundColor:'black', border:'none'}}>Use Template</Button>
+                            </Card.Body>
+                        </Card>
+                        <Card style={{ width: '15rem' }}>
+                            <Image variant="top" src={mockup} style={{ width: '15rem', height:'auto' }} />
+                            <Card.Body>
+                                <Card.Title style={{margin: '0', fontWeight:'bold', color:'black'}}>ONE to MANY</Card.Title>
+                                <Card.Text style={{fontSize:'12px'}}>
+                                    suitable for markets with two options. either true or false.
+                                </Card.Text>
+                                <Button onClick={()=>router.push('/create/true-or-false')} variant="primary" style={{backgroundColor:'black', border:'none'}}>Use Template</Button>
+                            </Card.Body>
+                        </Card>
+                        <Card style={{ width: '15rem' }}>
+                            <Image variant="top" src={mockup} style={{ width: '15rem', height:'auto' }} />
+                            <Card.Body>
+                                <Card.Title style={{margin: '0', fontWeight:'bold', color:'black'}}>BET on VOTE</Card.Title>
                                 <Card.Text style={{fontSize:'12px'}}>
                                     suitable for markets with two options. either true or false.
                                 </Card.Text>
