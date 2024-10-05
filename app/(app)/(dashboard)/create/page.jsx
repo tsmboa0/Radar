@@ -12,7 +12,7 @@ import {
 	Container
 } from 'react-bootstrap';
 import mockup from "public/images/background/true-or-false.png";
-import voteOnBet from "public/images/background/betonvote.png";
+import voteOnBet from "public/images/background/voteonbet.jpg";
 import one2many from "public/images/background/onetomany.jpg";
 
 import { useRouter } from "next/navigation";
