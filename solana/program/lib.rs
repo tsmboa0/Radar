@@ -5,7 +5,6 @@ use anchor_lang::prelude::*;
 // use std::str::FromStr;
 use solana_program::program::invoke;
 use solana_program::system_instruction::transfer;
-// This is your program's public key and it will update
 // automatically when you build the project.
 declare_id!("BPkp6UKXSFBVjkw8Zk4mxS2AYd7UHwxrJM8xSRSMov8K");
 

@@ -1,6 +1,8 @@
 // "use server"
 // @ts-nocheck
 
+//prevent check from reaching there
+
 import * as anchor from "@project-serum/anchor";
 import {AnchorWallet } from "@solana/wallet-adapter-react";
 import { createPoolDb, setDbResult } from "../database/route";

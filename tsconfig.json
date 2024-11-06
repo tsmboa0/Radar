@@ -21,6 +21,6 @@
       "*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "solana/walletContextProvider.tsx", "app/api/server/blockchain/route.ts", "app/(frontend)/layout.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "solana/walletContextProvider.tsx", "app/api/server/blockchain/route.ts", "app/(frontend)/layout.js", "app/(app)/(dashboard)/create/(templates)/multi-options/page.jsx", "app/(app)/(dashboard)/create/(templates)/betonvote/page.jsx"],
   "exclude": ["node_modules"]
 }
