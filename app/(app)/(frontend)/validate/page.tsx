@@ -8,7 +8,6 @@ import { Check } from "react-bootstrap-icons";
 import { setResult } from "app/api/server/blockchain/route";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { useState, useEffect } from "react";
-import { getAllPools } from "app/api/server/database/route";
 
 const Validate = () => {
     const wallet = useWallet();
@@ -38,23 +37,23 @@ const Validate = () => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(()=>{
-        const getAllPool = async()=>{
-            const response :any = await getAllPools();
+        // const getAllPool = async()=>{
+        //     const response :any = await getAllPools();
 
-            if(response !== null){
-                const timeNow = Math.floor(new Date().getTime()/1000);
-                const result = JSON.parse(response);
-                const endedPools = [...result].filter((pool)=> (parseInt(pool.endTime)) < timeNow);
+        //     if(response !== null){
+        //         const timeNow = Math.floor(new Date().getTime()/1000);
+        //         const result = JSON.parse(response);
+        //         const endedPools = [...result].filter((pool)=> (parseInt(pool.endTime)) < timeNow);
 
-                setPools(endedPools);
-                setIsLoading(false);  
-            }else{
-                console.log("pools is null")
-                setPools([]);
-                setIsLoading(false);
-            }
-        };
-        getAllPool();
+        //         setPools(endedPools);
+        //         setIsLoading(false);  
+        //     }else{
+        //         console.log("pools is null")
+        //         setPools([]);
+        //         setIsLoading(false);
+        //     }
+        // };
+        // getAllPool();
     }, []);
 
      
