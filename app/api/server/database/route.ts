@@ -140,14 +140,7 @@ export async function POST(req: Request){
                     const playerPublicKey = parsedLog.data.player.toBase58();
                     const amount = parsedLog.data.amount.toNumber();
                     const poolId_ = parsedLog.data.poolId.toBase58();
-                    const option = parsedLog.data.option; 
-    
-                    // Output the extracted information
-                    console.log("Player Public Key:", playerPublicKey);
-                    console.log("Amount:", amount);
-                    console.log("Pool ID:", poolId_);
-                    console.log("Option:", option);
-    
+                    const option = parsedLog.data.option;   
                     updateBetOdds(amount, poolId_, option);
                     console.log("Bet Odds updated");
                 });

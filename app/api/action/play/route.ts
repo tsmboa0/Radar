@@ -9,8 +9,6 @@ import _idl from "utils/program/idl.json";
 
 const idl = JSON.parse(JSON.stringify(_idl));
 
-import { getPoolDetails } from "app/api/server/database/route";
-
 const PROGRAM_ID = new PublicKey("BPkp6UKXSFBVjkw8Zk4mxS2AYd7UHwxrJM8xSRSMov8K");
 const _program = "BPkp6UKXSFBVjkw8Zk4mxS2AYd7UHwxrJM8xSRSMov8K"
 
@@ -31,12 +29,15 @@ export const GET = async(req:Request)=>{
     console.log("starting the try block in blinks");
 
     try{
-        const poolDetail : any = await getPoolDetails(formData);
-        const result = JSON.parse(poolDetail);
+        const poolDetail : any = await fetch(`/api/server/database?action=getpooldetails&pda=${pda}`,{
+            method: "GET"
+        });
 
-        console.log("Blinks pool title is: ",result.poolTitle);
+        const result = await poolDetail.json();
 
-        const title = result.poolTitle;
+        console.log("Blinks pool title is: ",result[0].title);
+
+        const title = result.title;
         const desc = result.desc;
         const option1 = result.option1;
         const option2 = result.option2;
@@ -137,11 +138,15 @@ export const POST = async(req:Request)=>{
     console.log("inside post request from blinks and the pda is: ", pda);
     const data = new FormData();
     data.append("pda", pda);
-    const pool = await getPoolDetails(data);
-    const result = JSON.parse(pool);
+    const pool = await fetch(`/api/server/database?action=getpooldetails&pda=${pda}`,{
+        method: "GET"
+    });
+
+    const result = await pool.json();;
+
     console.log("pool fetched..");
-    const title = result.poolTitle;
-    const poolId = new PublicKey(result.pda);
+    const title = result[0].title;
+    const poolId = new PublicKey(result[0].pdaBase58);
     const manager = new PublicKey(result.manager);
 
     const body: ActionPostRequest = await req.json();

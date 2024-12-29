@@ -1,5 +1,4 @@
 "use client"
-import { onchainPoolDetails } from 'app/api/server/blockchain/route';
 import { PlaceBet } from 'app/api/server/blockchain/route';
 import { sellPosition } from 'app/api/server/blockchain/route';
 import "../styles.css";
