@@ -14,30 +14,37 @@ const Home = () => {
     const [pools, setPools] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [noPool, setNoPool] = useState(true);
-    const _user = session?.user?.name;
-    console.log(session?.user);
+    console.log("The session user is: ",session?.user.name);
 
     useEffect(()=>{
-        const data = new FormData();
-        data.append("user", _user);
         const fetchPools = async()=>{
             console.log("starting pools fetch...");
-            const response = await getManagerPools(data);
-            if(response !== null){
-                const result = [...JSON.parse(response)];
-                console.log("pool 0 poolTitle is: ",result[0].poolTitle);
-                setPools(result);
-                setIsLoading(false);
-            }else{
-                console.log("no pools");
-                setNoPool(true);
-                setIsLoading(false);
+            const user = session?.user?.name;
+            const url = `/api/server/database/?action=getmanagerpools&user=${user}`;
+
+            try{
+                const response = await fetch(url, {
+                    method: "GET"
+                });
+
+                if(response.status == 200){
+                    const result = await response.json();
+                    console.log("pool 0 poolTitle is: ",result[0].poolTitle);
+                    setPools(result);
+                    setIsLoading(false);
+                }else{
+                    console.log("no pools");
+                    setNoPool(true);
+                    setIsLoading(false);
+                }
+            }catch(e){
+                console.log("An error occured while fetching manager pools: ",e)
             }
 
         }
 
         fetchPools();
-    },[_user]);
+    },[]);
 
     return (
         <Fragment>
@@ -69,7 +76,7 @@ const Home = () => {
                                                 <Card.Text style={{fontSize:'12px'}}>
                                                     {(item.desc).substring(0,25)}
                                                 </Card.Text>
-                                                <Link href={`/pool/${item.pda}`}>
+                                                <Link href={`/pool/${item.pdaBase58}`}>
                                                     <Button variant="primary" style={{padding:'7px', backgroundColor:'black',border:'none'}}>Manage</Button>
                                                 </Link>
                                             </Card.Body>

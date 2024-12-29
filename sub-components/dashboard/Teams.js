@@ -9,10 +9,7 @@ import { Clipboard, Clipboard2Check } from "react-bootstrap-icons";
 import { useRouter } from "next/navigation";
 
 // import required data files
-import { getPoolDetails } from "app/api/server/database/route";
 import { onchainPoolDetails } from "app/api/server/blockchain/route";
-import { setResult } from "app/api/server/blockchain/route";
-import { deletePool } from "app/api/server/database/route";
 import { useState } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 const Teams = ({pda}) => {
@@ -55,23 +52,15 @@ const Teams = ({pda}) => {
         }
     }
 
-    const submitResult = async()=>{
-        console.log("begin set result");
-
-        if(!publicKey) alert("please connect your wallet first");
-
-        const response = await setResult(connection, wallet, poolDetail.poolTitle);
-        alert("result set successfully...");
-        console.log("result set success...");
-    }
-
     const deleteEntry = async()=>{
         console.log("starting delete");
-        const data = new FormData;
-        data.append("pda",pda);
 
-        const response = await deletePool(data);
-        alert(response.message);
+        const response = await fetch(`/api/server/database/?action=deletepool`,{
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(pda)
+        });
+        alert(response.json());
         router.push("/dashboard");
     }
 
@@ -90,10 +79,13 @@ const Teams = ({pda}) => {
             const data = new FormData();
             data.append("pda", pda)
             console.log("initializing getPooletails");
-            const response = await getPoolDetails(data);
-            const result = JSON.parse(response);
+            const response = await fetch(`/api/server/database/?action=getpooldetails&pda=${pda}`, {
+                method: "GET"
+            });
+            const result = await response.json();
+            console.log(result);
 
-            setPoolDetail(result);
+            setPoolDetail(result[0]);
             setIsLoading(false);
         };
         fetchPool();
@@ -127,7 +119,7 @@ const Teams = ({pda}) => {
                             <tbody>
                                 <tr>
                                     <td className="align-middle">Pool Title</td>
-                                    <td className="align-middle">{poolDetail.poolTitle}</td>
+                                    <td className="align-middle">{poolDetail.title}</td>
                                 </tr>
                                 <tr>
                                     <td className="align-middle">Pool Description</td>

@@ -5,13 +5,13 @@
 
 import * as anchor from "@project-serum/anchor";
 import {AnchorWallet } from "@solana/wallet-adapter-react";
-import { createPoolDb, setDbResult } from "../database/route";
+import { createPoolDb } from "../database/route";
 // import getProvider from "utils/program/provider";
 
 import idl from "utils/program/idl.json";
-import { PublicKey, SystemProgram, Connection, clusterApiUrl, SIGNATURE_LENGTH_IN_BYTES } from "@solana/web3.js";
+import { PublicKey, SystemProgram, Connection, clusterApiUrl, SIGNATURE_LENGTH_IN_BYTES, LAMPORTS_PER_SOL } from "@solana/web3.js";
 
-const programID = new anchor.web3.PublicKey("BPkp6UKXSFBVjkw8Zk4mxS2AYd7UHwxrJM8xSRSMov8K");
+const programID = new anchor.web3.PublicKey("D2Hh6CRhhM2UU6hTdSmKFgxjNs8uHTzCWuwmZFkg9WKL");
 // const {connection} = useConnection();
 // const wallet = useWallet() as AnchorWallet;
 const commitment = "processed";
@@ -71,6 +71,12 @@ export const CreateTFPool = async(connection:any, wallet: any, title:string, des
         const poolDetails = await program.account.trueOrFalsePool.fetch(pda);
         console.log("the pool details is: ", poolDetails);
 
+        const pdaBase58 = pda.toBase58();
+        const manager = wallet.publicKey.toBase58();
+        const mimeType = image.type;
+        const imageBase64 = image.base64;
+        const minBetAmount_ = minBetAmount * LAMPORTS_PER_SOL;
+
         try{
             //pda must follow here...
             const formData = new FormData;
@@ -91,9 +97,30 @@ export const CreateTFPool = async(connection:any, wallet: any, title:string, des
 
             console.log("All form data passed..");
 
-            const dbEntry = await createPoolDb(formData);
+            try{
+                const dbEntry = await fetch("/api/server/database/?action=createpool", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(
+                        {
+                            title, desc, pdaBase58, manager, startTime, lockTime, endTime, minBetAmount_,
+                            houseFee, option1, option2, resultUrl, imageBase64, mimeType
+                        }
+                    )
+                })
+    
+                if (dbEntry.status == 200){
+                    console.log("Pool created successfully on the database")
+                    return {success:true, message:"Pool Created Successfully. Copy your Blinks in the next page", pda:pda}
+                }else{
+                    console.log("Pool creation failed");
+                    return{success:false, message:"Pool Creation failed. Please try again."}
+                }
+            }catch(e){
+                console.log("Pool reation failed with: ",e);
+            }
 
-            return {success:true, message:"Pool Created Successfully. Copy your Blinks in the next page", pda:pda}
+            // const dbEntry = await createPoolDb(formData);
         }catch(err){
             return{success:false, message:"Pool Creation failed. Please try again."}
         }
@@ -134,11 +161,9 @@ export const PlaceBet = async(connection: any, wallet: any, title: string, _mana
 
         await connection.confirmTransaction({
             signature: signature
-        }, "finalized");
+        }, "confirmed");
 
         console.log("tx confirmed..");
-        const userBetDetail=  await program.account.betTf.fetch(userBetPDA);
-        console.log("Your bet amount and option is: ",userBetDetail);
 
         return {success:true, message: "Bet Placed Successfully." }
     }catch(e:any){

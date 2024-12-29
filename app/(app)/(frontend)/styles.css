@@ -148,7 +148,7 @@ nav{
     align-items: center;
 }
 .play__section{
-    width: 24rem;
+    width: 50%;
     border: 2px dashed black;
     border-radius: 1rem;
     padding: 3rem;
