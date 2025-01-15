@@ -43,7 +43,8 @@
     "sharp": "^0.33.5",
     "simplebar": "^6.2.7",
     "simplebar-react": "^3.2.6",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^20",

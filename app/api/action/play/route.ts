@@ -37,11 +37,11 @@ export const GET = async(req:Request)=>{
 
         console.log("Blinks pool title is: ",result[0].title);
 
-        const title = result.title;
-        const desc = result.desc;
-        const option1 = result.option1;
-        const option2 = result.option2;
-        const icon = result.uploadUrl;
+        const title = result[0].title;
+        const desc = result[0].desc;
+        const option1 = result[0].option1;
+        const option2 = result[0].option2;
+        const icon = result[0].uploadUrl;
 
         //fetch data from blockchain
         const provider = new anchor.AnchorProvider(
@@ -147,7 +147,7 @@ export const POST = async(req:Request)=>{
     console.log("pool fetched..");
     const title = result[0].title;
     const poolId = new PublicKey(result[0].pdaBase58);
-    const manager = new PublicKey(result.manager);
+    const manager = new PublicKey(result[0].manager);
 
     const body: ActionPostRequest = await req.json();
     const userAccount = new PublicKey(body.account);
