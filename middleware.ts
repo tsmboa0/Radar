@@ -11,9 +11,10 @@ export default auth((req) => {
   headers.set("Access-Control-Allow-Origin", "*"); // Allow all origins (use specific domains in production)
   headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   headers.set("Access-Control-Allow-Headers", "Content-Type");
+  const path = req.nextUrl.pathname;
 
-  if (!req.auth && req.nextUrl.pathname !== "/sign-in" && req.nextUrl.pathname !== "/" && req.nextUrl.pathname !== "/action.json" 
-    && !req.nextUrl.pathname.startsWith("/play") && !req.nextUrl.pathname.startsWith("/validate"))
+  if (!req.auth && path !== "/sign-in" && path !== "/" && path !== "/action.json" 
+    && !path.startsWith("/play") && !path.startsWith("/validate"))
   {
     const newUrl = new URL("/sign-in", req.nextUrl.origin)
     return Response.redirect(newUrl)

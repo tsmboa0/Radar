@@ -20,6 +20,7 @@ const headers = createActionHeaders();
 export const GET = async(req:Request)=>{
     console.log("get request received...");
     const url = new URL(req.url);
+    console.log("the origin is: ",url.origin);
     const pda : any = url.searchParams.get("id");
     const formData = new FormData();
     formData.append("pda", pda as string);
@@ -29,9 +30,11 @@ export const GET = async(req:Request)=>{
     console.log("starting the try block in blinks");
 
     try{
-        const poolDetail : any = await fetch(`/api/server/database?action=getpooldetails&pda=${pda}`,{
+        const poolDetail : any = await fetch(`${url.origin}/api/server/database?action=getpooldetails&pda=${pda}`, {
             method: "GET"
         });
+
+        console.log("the response is: ", await poolDetail);
 
         const result = await poolDetail.json();
 

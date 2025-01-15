@@ -76,8 +76,6 @@ const Teams = ({pda}) => {
 
     useEffect(()=>{
         const fetchPool = async()=>{
-            const data = new FormData();
-            data.append("pda", pda)
             console.log("initializing getPooletails");
             const response = await fetch(`/api/server/database/?action=getpooldetails&pda=${pda}`, {
                 method: "GET"
